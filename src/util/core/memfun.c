@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include "memfun.h"
+#include "/shared/nil/mySnet/pcl/include/scc.h"
 
 void SNetMemFailed(void)
 {
@@ -19,7 +20,7 @@ void SNetMemFailed(void)
 void *SNetMemAlloc( size_t size)
 {
   void *ptr = NULL;
-  if (size && (ptr = malloc(size)) == NULL) {
+  if (size && (ptr = SCCMallocPtr(size)) == NULL) {
     SNetMemFailed();
   }
   return ptr;
@@ -35,7 +36,7 @@ void *SNetMemResize( void *ptr, size_t size)
 
 void SNetMemFree( void *ptr)
 {
-  free(ptr);
+  SCCFreePtr(ptr);
 }
 
 void* SNetMemAlign( size_t size)

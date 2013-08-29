@@ -125,9 +125,9 @@ else
    with_lpel_includes=
 fi
 
-AC_ARG_WITH([lpel-libs], [AC_HELP_STRING([--with-lpel-libs=DIR], [look up liblpel.la in DIR])], [], [with_lpel_libs=])
-AC_MSG_CHECKING([for liblpel.la in $with_lpel_libs])
-if test -r "$with_lpel_libs/liblpel.la"; then
+AC_ARG_WITH([lpel-libs], [AC_HELP_STRING([--with-lpel-libs=DIR], [look up liblpel_hrc.la in DIR])], [], [with_lpel_libs=])
+AC_MSG_CHECKING([for liblpel_hrc.la in $with_lpel_libs])
+if test -r "$with_lpel_libs/liblpel_hrc.la"; then
    with_lpel_libs=`(cd "$with_lpel_libs"; pwd)`
    AC_MSG_RESULT([yes])
 else
@@ -138,7 +138,7 @@ fi
 have_lpel=no
 if test -n "$with_lpel_includes" -a -n "$with_lpel_libs"; then
    LPEL_INCLUDES=-I$with_lpel_includes
-   LIBLPEL_LA=$with_lpel_libs/liblpel.la
+   LIBLPEL_LA=$with_lpel_libs/liblpel_hrc.la
    AC_SUBST([LIBLPEL_LA])
    LIBLPEL_HRC_LA=$with_lpel_libs/liblpel_hrc.la
    AC_SUBST([LIBLPEL_HRC_LA])

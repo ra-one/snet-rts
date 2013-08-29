@@ -18,10 +18,8 @@ snetstuff_SCRIPTS = \
 pkglib_LTLIBRARIES = \
 	libsnetutil.la  \
 	libruntimestream.la \
-	libfrontrt.la \
 	libC4SNet.la \
 	libC4SNetc.la \
-	libtbpthread.la \
 	libdistribnodist.la
 
 pkginclude_HEADERS = \
@@ -213,24 +211,9 @@ libtbpthread_la_SOURCES = \
 	src/threading/pthread/monitorer.h
 
 if ENABLE_TH_LPEL
-pkglib_LTLIBRARIES += libtblpel.la 
-libtblpel_la_SOURCES = \
-	src/threading/lpel/lpelmod/assign.c \
-	src/threading/lpel/lpelmod/assign.h \
-	src/threading/lpel/lpelmod/mon_snet.c \
-	src/threading/lpel/lpelmod/mon_snet.h \
-	src/threading/lpel/lpelif/glue_snet.c \
-	src/threading/lpel/lpelif/glue_snet.h \
-	src/threading/lpel/lpelif/glue_decen.c \
-	src/threading/lpel/lpelif/wrappers.c 
-libtblpel_la_CPPFLAGS = \
-        $(AM_CPPFLAGS) \
-        $(LPEL_INCLUDES) \
-        -I$(srcdir)/src/threading/lpel/lpelmod
-libtblpel_la_LIBADD = $(LIBLPEL_LA)
-
 pkglib_LTLIBRARIES += libtblpel_hrc.la 
 libtblpel_hrc_la_SOURCES = \
+  src/runtime/common/moninfo.c \
 	src/threading/lpel/lpelmod/assign.c \
 	src/threading/lpel/lpelmod/assign.h \
 	src/threading/lpel/lpelmod/mon_snet.c \
