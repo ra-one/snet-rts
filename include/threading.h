@@ -49,6 +49,12 @@
  */
 int SNetThreadingInit(int argc, char **argv);
 
+/**
+ * Initialize the threading backend on worker
+ *
+ * @return 0 on success
+ */
+int SNetThreadingInitWorker(int argc, char **argv);
 
 /**
  * Return the thread id as integer value

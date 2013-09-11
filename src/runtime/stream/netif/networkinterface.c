@@ -297,3 +297,16 @@ int SNetInRun(int argc, char **argv,
 
   return 0;
 }
+
+/**
+ * Main starting entry point of the SNet program for worker
+ */
+int SNetInRunWorker(int argc, char **argv)
+{
+
+  SNetDistribInit(argc, argv, NULL);
+
+  (void) SNetThreadingInitWorker(argc, argv);
+
+  return 0;
+}

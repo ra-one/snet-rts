@@ -42,7 +42,9 @@ int SNetInRun(int argc, char *argv[],
 	      char *const_labels[], int number_of_labels, 
 	      char *const_interfaces[], int number_of_interfaces, 
 	      snet_startup_fun_t fun);
-
+        
+int SNetInRunWorker(int argc, char *argv[]);
+        
 void SNetRuntimeHelpText(void);
 void SNetRuntimeStartWait(snet_stream_t *in, snet_info_t *info, snet_stream_t *out);
 

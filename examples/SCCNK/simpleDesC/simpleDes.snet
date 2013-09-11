@@ -1,0 +1,21 @@
+  <metadata>
+   <boxdefault>
+     <interface value="C4SNet" />
+   </boxdefault>
+  </metadata>
+
+net simpleDes {
+
+  box source((<interval>, <mess>) -> (pt,key));
+  box initP((pt, key) -> (D, K, <C>));
+  box subRound((D, K, <C>) -> (D, K, <C>));
+  box finalP( (D, K, <C>) -> (ct));
+  box sink((ct) -> );
+
+
+} connect source@1 ..
+  initP@13 .. subRound .. subRound .. finalP@113
+  .. sink@2;
+
+
+

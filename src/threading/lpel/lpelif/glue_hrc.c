@@ -6,6 +6,7 @@
 #include "glue_snet.h"
 #include "threading.h"
 #include "hrc_lpel.h"
+#include "lpel_common.h"
 #include <lpel/monitor.h>
 #include "debug.h"
 
@@ -150,8 +151,35 @@ int SNetThreadingInit(int argc, char **argv)
 	return 0;
 }
 
+int SNetThreadingInitWorker(int argc, char **argv)
+{
 
+	lpel_config_t config;
+	int i;
 
+	memset(&config, 0, sizeof(lpel_config_t));
+
+	config.type = HRC_LPEL;
+
+	config.flags = 0;
+
+  config.proc_others = 0;
+  
+	for (i=0; i<argc; i++) {
+    if(strcmp(argv[i], "-w") == 0) {
+			/* Number of workers */
+      i++;
+			config.num_workers = atoi(argv[i]);
+      config.proc_workers = atoi(argv[i]);
+    }
+  }
+
+	LpelInit(&config);
+
+	if (LpelStart(&config)) SNetUtilDebugFatal("Could not initialize LPEL!");
+  LpelCleanup();
+	return 0;
+}
 
 /*****************************************************************************
  * Spawn a new task
