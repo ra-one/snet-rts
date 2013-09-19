@@ -6,16 +6,16 @@
 
 net simpleDes {
 
-  box source((<interval>, <mess>) -> (pt,key));
+  box snet_source((<interval>, <mess>) -> (pt,key));
   box initP((pt, key) -> (D, K, <C>));
   box subRound((D, K, <C>) -> (D, K, <C>));
   box finalP( (D, K, <C>) -> (ct));
-  box sink((ct) -> );
+  box snet_sink((ct) -> );
 
 
-} connect source@1 ..
-  initP@13 .. (subRound*{<C>} if <C==2>) .. finalP@113
-  .. sink@2;
+} connect snet_source ..
+  initP .. subRound .. subRound .. finalP
+  .. snet_sink;
 
 
 

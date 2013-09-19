@@ -143,6 +143,16 @@ static void SNetInClose(FILE *file)
   fclose(file);
 }
 
+void printInfotmp(snet_info_t *a) {
+  int *tmp = (int *)a;
+  int i;
+  printf("info:   ");
+  for (i = 0; i < 3; i++)
+    printf("%x   ", tmp[i]);
+  printf("\n");
+}
+  
+
 
 /**
  * Main starting entry point of the SNet program
@@ -157,7 +167,7 @@ int SNetInRun(int argc, char **argv,
   snet_stream_t *input_stream = NULL;
   snet_stream_t *output_stream = NULL;
   int i = 0;
-  snet_info_t *info;
+  snet_info_t *info = NULL;
   snet_locvec_t *locvec;
   snetin_label_t *labels = NULL;
   snetin_interface_t *interfaces = NULL;
@@ -246,6 +256,7 @@ int SNetInRun(int argc, char **argv,
 
   info = SNetInfoInit();
 
+
   SNetDistribInit(argc, argv, info);
 
   (void) SNetThreadingInit(argc, argv);
@@ -255,6 +266,7 @@ int SNetInRun(int argc, char **argv,
   locvec = SNetLocvecCreate();
   SNetLocvecSet(info, locvec);
 
+  
   input_stream = SNetStreamCreate(0);
   output_stream = fun(input_stream, info, 0);
   output_stream = SNetRouteUpdate(info, output_stream, 0);
@@ -270,13 +282,11 @@ int SNetInRun(int argc, char **argv,
   }
 
   SNetRuntimeStartWait(input_stream, info, output_stream);
-
+  
   /* tell the threading layer that it is ok to shutdown,
      and wait until it has stopped such that it can be cleaned up */
   (void) SNetThreadingStop();
-
   (void) SNetThreadingCleanup();
-
   SNetInfoDestroy(info);
 
   SNetLocvecDestroy(locvec);

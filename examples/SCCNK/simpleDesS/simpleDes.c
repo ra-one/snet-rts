@@ -34,20 +34,20 @@ char *snet_simpleDes_labels[] = {
 char *snet_simpleDes_interfaces[] = {
 	"C4SNet"};
 
-extern void *source(void *hnd, int arg_0, int arg_1);
+extern void *snet_source(void *hnd, int arg_0, int arg_1);
 
-static snet_handle_t *SNetExeRealm_create__source(snet_handle_t *h) { return(h); }
+static snet_handle_t *SNetExeRealm_create__snet_source(snet_handle_t *h) { return(h); }
 
-static snet_handle_t *SNetExeRealm_update__source(snet_handle_t *h) { return(h); }
+static snet_handle_t *SNetExeRealm_update__snet_source(snet_handle_t *h) { return(h); }
 
-static snet_handle_t *SNetExeRealm_destroy__source(snet_handle_t *h) { return(h); }
+static snet_handle_t *SNetExeRealm_destroy__snet_source(snet_handle_t *h) { return(h); }
 
-snet_handle_t *SNetCall__source(snet_handle_t *handle, int arg_0, int arg_1)
+snet_handle_t *SNetCall__snet_source(snet_handle_t *handle, int arg_0, int arg_1)
 {
-  return source(handle, arg_0, arg_1);
+  return snet_source(handle, arg_0, arg_1);
 }
 
-static snet_handle_t *SNet__simpleDes__source(snet_handle_t *hnd)
+static snet_handle_t *SNet__simpleDes__snet_source(snet_handle_t *hnd)
 {
   struct record *rec = NULL;
   int stag_interval = 0;
@@ -59,7 +59,7 @@ static snet_handle_t *SNet__simpleDes__source(snet_handle_t *hnd)
 
   stag_mess = SNetRecTakeTag(rec, T__simpleDes__mess);
 
-  return(SNetCall__source(hnd, stag_interval, stag_mess));
+  return(SNetCall__snet_source(hnd, stag_interval, stag_mess));
 }
 
 extern void *initP(void *hnd, void *arg_0, void *arg_1);
@@ -152,20 +152,20 @@ static snet_handle_t *SNet__simpleDes__finalP(snet_handle_t *hnd)
   return(SNetCall__finalP(hnd, field_D, field_K, stag_C));
 }
 
-extern void *sink(void *hnd, void *arg_0);
+extern void *snet_sink(void *hnd, void *arg_0);
 
-static snet_handle_t *SNetExeRealm_create__sink(snet_handle_t *h) { return(h); }
+static snet_handle_t *SNetExeRealm_create__snet_sink(snet_handle_t *h) { return(h); }
 
-static snet_handle_t *SNetExeRealm_update__sink(snet_handle_t *h) { return(h); }
+static snet_handle_t *SNetExeRealm_update__snet_sink(snet_handle_t *h) { return(h); }
 
-static snet_handle_t *SNetExeRealm_destroy__sink(snet_handle_t *h) { return(h); }
+static snet_handle_t *SNetExeRealm_destroy__snet_sink(snet_handle_t *h) { return(h); }
 
-snet_handle_t *SNetCall__sink(snet_handle_t *handle, void *arg_0)
+snet_handle_t *SNetCall__snet_sink(snet_handle_t *handle, void *arg_0)
 {
-  return sink(handle, arg_0);
+  return snet_sink(handle, arg_0);
 }
 
-static snet_handle_t *SNet__simpleDes__sink(snet_handle_t *hnd)
+static snet_handle_t *SNet__simpleDes__snet_sink(snet_handle_t *hnd)
 {
   struct record *rec = NULL;
   void *field_ct = NULL;
@@ -174,20 +174,46 @@ static snet_handle_t *SNet__simpleDes__sink(snet_handle_t *hnd)
 
   field_ct = SNetRefTakeData(SNetRecTakeField(rec, F__simpleDes__ct));
 
-  return(SNetCall__sink(hnd, field_ct));
+  return(SNetCall__snet_sink(hnd, field_ct));
+}
+
+static snet_stream_t *SNet__simpleDes___IN___SL___SL___SL___SL___SL(snet_stream_t *in_buf, snet_info_t *info, int location)
+{
+  snet_stream_t *out_buf = NULL;
+
+  out_buf = SNetBox(in_buf, info, location, "snet_source", 
+              &SNet__simpleDes__snet_source, 
+              &SNetExeRealm_create__snet_source, 
+              &SNetExeRealm_update__snet_source, 
+              &SNetExeRealm_destroy__snet_source, 
+              SNetIntListListCreate(1, 
+                SNetIntListCreate(4, field, F__simpleDes__pt, field, F__simpleDes__key)));
+
+  return (out_buf);
+}
+
+static snet_stream_t *SNet__simpleDes___IN___SL___SL___SL___SL___SR(snet_stream_t *in_buf, snet_info_t *info, int location)
+{
+  snet_stream_t *out_buf = NULL;
+
+  out_buf = SNetBox(in_buf, info, location, "initP", 
+              &SNet__simpleDes__initP, 
+              &SNetExeRealm_create__initP, 
+              &SNetExeRealm_update__initP, 
+              &SNetExeRealm_destroy__initP, 
+              SNetIntListListCreate(1, 
+                SNetIntListCreate(6, field, F__simpleDes__D, field, F__simpleDes__K, tag, T__simpleDes__C)));
+
+  return (out_buf);
 }
 
 static snet_stream_t *SNet__simpleDes___IN___SL___SL___SL___SL(snet_stream_t *in_buf, snet_info_t *info, int location)
 {
   snet_stream_t *out_buf = NULL;
 
-  out_buf = SNetBox(in_buf, info, 1, "source", 
-              &SNet__simpleDes__source, 
-              &SNetExeRealm_create__source, 
-              &SNetExeRealm_update__source, 
-              &SNetExeRealm_destroy__source, 
-              SNetIntListListCreate(1, 
-                SNetIntListCreate(4, field, F__simpleDes__pt, field, F__simpleDes__key)));
+  out_buf = SNetSerial(in_buf, info, location, 
+              &SNet__simpleDes___IN___SL___SL___SL___SL___SL, 
+              &SNet__simpleDes___IN___SL___SL___SL___SL___SR);
 
   return (out_buf);
 }
@@ -196,11 +222,11 @@ static snet_stream_t *SNet__simpleDes___IN___SL___SL___SL___SR(snet_stream_t *in
 {
   snet_stream_t *out_buf = NULL;
 
-  out_buf = SNetBox(in_buf, info, 13, "initP", 
-              &SNet__simpleDes__initP, 
-              &SNetExeRealm_create__initP, 
-              &SNetExeRealm_update__initP, 
-              &SNetExeRealm_destroy__initP, 
+  out_buf = SNetBox(in_buf, info, location, "subRound", 
+              &SNet__simpleDes__subRound, 
+              &SNetExeRealm_create__subRound, 
+              &SNetExeRealm_update__subRound, 
+              &SNetExeRealm_destroy__subRound, 
               SNetIntListListCreate(1, 
                 SNetIntListCreate(6, field, F__simpleDes__D, field, F__simpleDes__K, tag, T__simpleDes__C)));
 
@@ -218,7 +244,7 @@ static snet_stream_t *SNet__simpleDes___IN___SL___SL___SL(snet_stream_t *in_buf,
   return (out_buf);
 }
 
-static snet_stream_t *SNet__simpleDes___IN___SL___SL___SR___ST(snet_stream_t *in_buf, snet_info_t *info, int location)
+static snet_stream_t *SNet__simpleDes___IN___SL___SL___SR(snet_stream_t *in_buf, snet_info_t *info, int location)
 {
   snet_stream_t *out_buf = NULL;
 
@@ -229,46 +255,6 @@ static snet_stream_t *SNet__simpleDes___IN___SL___SL___SR___ST(snet_stream_t *in
               &SNetExeRealm_destroy__subRound, 
               SNetIntListListCreate(1, 
                 SNetIntListCreate(6, field, F__simpleDes__D, field, F__simpleDes__K, tag, T__simpleDes__C)));
-
-  return (out_buf);
-}
-
-static snet_stream_t *SNet____STAR_INCARNATE_simpleDes___IN___SL___SL___SR(snet_stream_t *in_buf, snet_info_t *info, int location)
-{
-  snet_stream_t *out_buf = NULL;
-
-  out_buf = SNetStarIncarnate(in_buf, info, location, 
-              SNetVariantListCreate(1, 
-                SNetVariantCreate(
-                  SNetIntListCreate(0), 
-                  SNetIntListCreate(1, T__simpleDes__C), 
-                  SNetIntListCreate(0))), 
-              SNetExprListCreate(1, 
-                SNetEeq( 
-                  SNetEtag( T__simpleDes__C), 
-                  SNetEconsti( 2))), 
-              &SNet__simpleDes___IN___SL___SL___SR___ST, 
-              &SNet____STAR_INCARNATE_simpleDes___IN___SL___SL___SR);
-
-  return (out_buf);
-}
-
-static snet_stream_t *SNet__simpleDes___IN___SL___SL___SR(snet_stream_t *in_buf, snet_info_t *info, int location)
-{
-  snet_stream_t *out_buf = NULL;
-
-  out_buf = SNetStar(in_buf, info, location, 
-              SNetVariantListCreate(1, 
-                SNetVariantCreate(
-                  SNetIntListCreate(0), 
-                  SNetIntListCreate(1, T__simpleDes__C), 
-                  SNetIntListCreate(0))), 
-              SNetExprListCreate(1, 
-                SNetEeq( 
-                  SNetEtag( T__simpleDes__C), 
-                  SNetEconsti( 2))), 
-              &SNet__simpleDes___IN___SL___SL___SR___ST, 
-              &SNet____STAR_INCARNATE_simpleDes___IN___SL___SL___SR);
 
   return (out_buf);
 }
@@ -288,7 +274,7 @@ static snet_stream_t *SNet__simpleDes___IN___SL___SR(snet_stream_t *in_buf, snet
 {
   snet_stream_t *out_buf = NULL;
 
-  out_buf = SNetBox(in_buf, info, 113, "finalP", 
+  out_buf = SNetBox(in_buf, info, location, "finalP", 
               &SNet__simpleDes__finalP, 
               &SNetExeRealm_create__finalP, 
               &SNetExeRealm_update__finalP, 
@@ -314,11 +300,11 @@ static snet_stream_t *SNet__simpleDes___IN___SR(snet_stream_t *in_buf, snet_info
 {
   snet_stream_t *out_buf = NULL;
 
-  out_buf = SNetBox(in_buf, info, 2, "sink", 
-              &SNet__simpleDes__sink, 
-              &SNetExeRealm_create__sink, 
-              &SNetExeRealm_update__sink, 
-              &SNetExeRealm_destroy__sink, 
+  out_buf = SNetBox(in_buf, info, location, "snet_sink", 
+              &SNet__simpleDes__snet_sink, 
+              &SNetExeRealm_create__snet_sink, 
+              &SNetExeRealm_update__snet_sink, 
+              &SNetExeRealm_destroy__snet_sink, 
               SNetIntListListCreate(0));
 
   return (out_buf);
@@ -384,24 +370,21 @@ snet_stream_t *SNet__simpleDes___simpleDes(snet_stream_t *in_buf, snet_info_t *i
 
 int SNetNetToId(snet_startup_fun_t fun)
 {
-  if (fun == &SNet__simpleDes___IN___SL___SL___SR___ST) {
-    return 1;
-  }
+  
 
   return -1;
 }
 
 snet_startup_fun_t SNetIdToNet(int id)
 {
-  if (id == 1) {
-    return &SNet__simpleDes___IN___SL___SL___SR___ST;
-  }
+  
 
   return NULL;
 }
 
 int SNetMain__simpleDes(int argc, char* argv[])
 {
+
   int i,numWorkers = 0,ret = 0;
   for (i=0; i<argc; i++) {
     if(strcmp(argv[i], "-w") == 0) {
@@ -410,7 +393,7 @@ int SNetMain__simpleDes(int argc, char* argv[])
 			numWorkers = atoi(argv[i]);
 		}
   }
-  SCCInit(0,numWorkers,2);
+  SCCInit(0,numWorkers);
 
   if(SCCIsMaster()){
     C4SNetInit(I__simpleDes__C4SNet, 0);
@@ -426,7 +409,6 @@ int SNetMain__simpleDes(int argc, char* argv[])
   }else{
     ret = SNetInRunWorker(argc, argv);
   }
-  SCCStop();
 
   return( ret);
 }

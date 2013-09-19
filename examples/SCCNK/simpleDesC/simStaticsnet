@@ -14,7 +14,7 @@ net simpleDes {
 
 
 } connect source@1 ..
-  initP@13 .. (subRound*{<C>} if <C==2>) .. finalP@113
+  initP@13 .. subRound .. subRound .. finalP@113
   .. sink@2;
 
 

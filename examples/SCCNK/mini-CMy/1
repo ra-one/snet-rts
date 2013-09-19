@@ -2,7 +2,7 @@ cd boxes
 
 gcc -std=c99  -I/shared/nil/snetInstall/include/snet/ -c dec.c
 
-gcc -std=c99  -I/shared/nil/snetInstall/include/snet/ -c /init.c
+gcc -std=c99  -I/shared/nil/snetInstall/include/snet/ -c init.c
 
 ar rcs libboxes.a dec.o init.o
 

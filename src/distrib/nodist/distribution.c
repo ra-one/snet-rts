@@ -10,9 +10,6 @@ static pthread_mutex_t exitMutex = PTHREAD_MUTEX_INITIALIZER;
 
 void SNetDistribInit(int argc, char **argv, snet_info_t *info)
 {
-  (void) argc; /* NOT USED */
-  (void) argv; /* NOT USED */
-  (void) info; /* NOT USED */
   node_location = 0;
   SNetReferenceInit();
 }

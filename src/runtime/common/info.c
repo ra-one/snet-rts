@@ -21,7 +21,7 @@ snet_info_tag_t SNetInfoCreateTag()
 
 snet_info_t *SNetInfoInit()
 {
-  snet_info_t *new = SNetMemAlloc(sizeof(*new));
+  snet_info_t *new = (snet_info_t *)SNetMemAlloc(sizeof(snet_info_t));
   new->tag = -1;
   new->data = 0;
   new->copyFun = NULL;

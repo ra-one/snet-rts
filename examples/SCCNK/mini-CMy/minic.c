@@ -193,11 +193,11 @@ int SNetMain__minic(int argc, char* argv[])
 			numWorkers = atoi(argv[i]);
 		}
   }
-  SCCInit(0,numWorkers);
+  SCCInit(0,numWorkers,2);
   
   if(SCCIsMaster()){
     C4SNetInit(I__minic__C4SNet, 0);
-  
+    
     ret = SNetInRun(argc, argv,
               snet_minic_labels,
               SNET__minic__NUMBER_OF_LABELS,

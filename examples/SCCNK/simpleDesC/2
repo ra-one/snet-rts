@@ -1,0 +1,3 @@
+
+rm *.o boxes/*.a boxes/*.o .libs/* simpleDes-lpel_hrc-nodist
+
