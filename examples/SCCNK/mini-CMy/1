@@ -1,3 +1,5 @@
+rm *.o boxes/*.a boxes/*.o .libs/* minic-lpel_hrc-nodist
+
 cd boxes
 
 gcc -std=c99  -I/shared/nil/snetInstall/include/snet/ -c dec.c

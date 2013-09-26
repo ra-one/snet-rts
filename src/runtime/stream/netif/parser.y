@@ -56,6 +56,9 @@
 #define MODE_TEXTUAL 1
 #define INTERFACE_UNKNOWN -1
 
+#define malloc SNetMemAlloc
+#define free SNetMemFree
+
  extern int yylex(void);
  extern void yylex_destroy();
  void yyerror(char *error);
@@ -147,6 +150,7 @@
    if(name != NULL){
      attrib_t *temp = ats;
      while(temp != NULL){
+       //printf("tmp->name = %s\n", temp->name);
        if(strcmp(temp->name, name) == 0){
 	 return temp;
        }
@@ -301,6 +305,7 @@ Record:       RECORD_BEGIN Attributes STARTTAG_SHORTEND
 		  }
 		}
 		else{
+      //printf("1Type: %s\n",TYPE);
 		  yyerror("Record without type found!");
 		}
 
@@ -384,6 +389,7 @@ Record:       RECORD_BEGIN Attributes STARTTAG_SHORTEND
 		    yyerror("Record with unknown type found!");
 		  }
 		}else{
+        //printf("2Type: %s\n",TYPE);
 		    yyerror("Record without type found!");
 		}
 	      } 

@@ -1,3 +1,5 @@
+rm *.o boxes/*.a boxes/*.o .libs/* simpleDes-lpel_hrc-nodist
+
 cd ./boxes
 
 gcc -std=gnu99 -I/shared/nil/snetInstall/include/snet/ -c desBoxes.c

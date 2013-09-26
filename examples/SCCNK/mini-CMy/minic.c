@@ -193,7 +193,7 @@ int SNetMain__minic(int argc, char* argv[])
 			numWorkers = atoi(argv[i]);
 		}
   }
-  SCCInit(0,numWorkers,2);
+  SCCInit(0,numWorkers,2,"/shared/nil/nk.host");
   
   if(SCCIsMaster()){
     C4SNetInit(I__minic__C4SNet, 0);
@@ -209,7 +209,7 @@ int SNetMain__minic(int argc, char* argv[])
   }else{
     ret = SNetInRunWorker(argc, argv);
   }
-
+  SCCStop();
   return( ret);
 }
 

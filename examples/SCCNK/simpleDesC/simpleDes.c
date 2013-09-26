@@ -410,7 +410,7 @@ int SNetMain__simpleDes(int argc, char* argv[])
 			numWorkers = atoi(argv[i]);
 		}
   }
-  SCCInit(0,numWorkers,2);
+  SCCInit(0,numWorkers,2,"/shared/nil/nk.host");
 
   if(SCCIsMaster()){
     C4SNetInit(I__simpleDes__C4SNet, 0);

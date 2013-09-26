@@ -317,7 +317,7 @@ static void PrintDirtyList(mon_task_t *mt)
 
 		case ST_CLOSED:
 			/* eventually free the mon_stream_t of the closed stream */
-			free(ms);
+			SNetMemFree(ms);
 			break;
 
 		default: assert(0);
@@ -378,7 +378,7 @@ static mon_worker_t *MonCbWorkerCreate( int wid)
 {
 	char fname[MON_FNAME_MAXLEN+1];
 
-	mon_worker_t *mon = (mon_worker_t *) malloc( sizeof(mon_worker_t));
+	mon_worker_t *mon = (mon_worker_t *) SNetMemAlloc( sizeof(mon_worker_t));
 	mon->flags = mon_flags;
 
 	mon->wid = wid;
@@ -410,7 +410,7 @@ static mon_worker_t *MonCbWorkerCreate( int wid)
 	/* user events */
 	mon->events.cnt = 0;
 	mon->events.size = MON_USREVT_BUFSIZE_DELTA;
-	mon->events.buffer = malloc( mon->events.size * sizeof(mon_usrevt_t));
+	mon->events.buffer = SNetMemAlloc( mon->events.size * sizeof(mon_usrevt_t));
 
 	/* start message */
 	if ((FLAG_WORKER(mon) && FLAG_TIMES(mon))
@@ -433,7 +433,7 @@ static mon_worker_t *MonCbWrapperCreate( mon_task_t *mt)
 {
 	char fname[MON_FNAME_MAXLEN+1];
 
-	mon_worker_t *mon = (mon_worker_t *) malloc( sizeof(mon_worker_t));
+	mon_worker_t *mon = (mon_worker_t *) SNetMemAlloc( sizeof(mon_worker_t));
 	mon->wid = -1;
 	mon->flags = mon_flags;
 
@@ -511,10 +511,10 @@ static void MonCbWorkerDestroy( mon_worker_t *mon)
 	}
 
 	if ( mon->events.buffer != NULL) {
-		free(mon->events.buffer);
+		SNetMemFree(mon->events.buffer);
 	}
 
-	free( mon);
+	SNetMemFree( mon);
 }
 
 
@@ -566,7 +566,7 @@ static void MonCbWorkerWaitStop(mon_worker_t *mon)
 static void MonCbTaskDestroy(mon_task_t *mt)
 {
 	assert( mt != NULL );
-	free(mt);
+	SNetMemFree(mt);
 }
 
 
@@ -585,7 +585,7 @@ static void MonCbTaskAssign(mon_task_t *mt, mon_worker_t *mw)
 
 mon_task_t *SNetThreadingMonTaskCreate(unsigned long tid, const char *name)
 {
-	mon_task_t *mt = malloc( sizeof(mon_task_t) );
+	mon_task_t *mt = SNetMemAlloc( sizeof(mon_task_t) );
 	mt->wait_prop = 0.0;
 
 	/* zero out everything */
@@ -727,7 +727,7 @@ static mon_stream_t *MonCbStreamOpen(mon_task_t *mt, unsigned int sid, char mode
 {
 	if (!mt || !(FLAG_STREAMS(mt) | FLAG_TASK(mt))) return NULL;
 
-	mon_stream_t *ms = malloc(sizeof(mon_stream_t));
+	mon_stream_t *ms = SNetMemAlloc(sizeof(mon_stream_t));
 	ms->sid = sid;
 	ms->montask = mt;
 	ms->mode = mode;
@@ -928,9 +928,9 @@ void SNetThreadingMonInit(lpel_monitoring_cb_t *cb, int node, int flag)
 	pthread_mutex_init(&global_lock, NULL);
 	if (mon_flags & SNET_MON_WAIT_PROP) {
 		num_workers = cb->num_workers;
-		mon_workers = (mon_worker_t **) malloc(num_workers * sizeof(mon_worker_t *));
+		mon_workers = (mon_worker_t **) SNetMemAlloc(num_workers * sizeof(mon_worker_t *));
 		global_wait_prop = 0.0;
-		worker_indexes = malloc(num_workers * sizeof(int));
+		worker_indexes = SNetMemAlloc(num_workers * sizeof(int));
 		for (int i = 0; i < num_workers; i++) {
 			worker_indexes[i] = i;
 		}
@@ -962,9 +962,9 @@ void SNetThreadingMonCleanup(void)
 #ifdef USE_LOGGING
 	pthread_mutex_destroy(&global_lock);
 	if (mon_workers)
-		free(mon_workers);
+		SNetMemFree(mon_workers);
 	if (worker_indexes)
-		free(worker_indexes);
+		SNetMemFree(worker_indexes);
 
 #endif
 }
@@ -982,12 +982,12 @@ void SNetThreadingMonEvent(mon_task_t *mt, snet_moninfo_t *moninfo)
 		/* grow events buffer if needed */
 		if (mw->events.cnt == mw->events.size) {
 			/* grow */
-			mon_usrevt_t *newbuf = malloc(
+			mon_usrevt_t *newbuf = SNetMemAlloc(
 					(mw->events.size + MON_USREVT_BUFSIZE_DELTA ) * sizeof(mon_usrevt_t)
 			);
 			if (mw->events.buffer != NULL) {
 				(void) memcpy(newbuf, mw->events.buffer, mw->events.size * sizeof(mon_usrevt_t));
-				free(mw->events.buffer);
+				SNetMemFree(mw->events.buffer);
 			}
 			mw->events.size += MON_USREVT_BUFSIZE_DELTA;
 			mw->events.buffer = newbuf;
