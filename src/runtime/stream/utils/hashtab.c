@@ -25,6 +25,7 @@
 
 #include "hashtab.h"
 #include "bool.h"
+#include "memfun.h"
 
 #define HASHTAB_NOT_KEY         (-1)
 
@@ -48,7 +49,7 @@ struct hashtab_iter {
 
 hashtab_iter_t *HashtabIterCreate( hashtab_t *ht)
 {
-  hashtab_iter_t *hti = (hashtab_iter_t *) malloc( sizeof(hashtab_iter_t));
+  hashtab_iter_t *hti = (hashtab_iter_t *) SNetMemAlloc( sizeof(hashtab_iter_t));
   hti->ht = ht;
   hti->idx = -1;
   hti->found = false;
@@ -59,7 +60,7 @@ void HashtabIterDestroy( hashtab_iter_t *hti)
 {
   hti->ht = NULL;
   hti->found = false;
-  free(hti);
+  SNetMemFree(hti);
 }
 
 int HashtabIterHasNext( hashtab_iter_t *hti)
@@ -97,12 +98,12 @@ void HashtabIterReset( hashtab_iter_t *hti)
  */
 hashtab_t *HashtabCreate( int init_cap2)
 {
-  hashtab_t *ht = (hashtab_t *) malloc( sizeof(hashtab_t));
+  hashtab_t *ht = (hashtab_t *) SNetMemAlloc( sizeof(hashtab_t));
   int i;
 
   ht->capacity = 1 << init_cap2;
   ht->count = 0;
-  ht->table = (hashtab_entry_t *) malloc(
+  ht->table = (hashtab_entry_t *) SNetMemAlloc(
       ht->capacity * sizeof(hashtab_entry_t));
 
   for (i=0; i<ht->capacity; i++) {
@@ -118,8 +119,8 @@ hashtab_t *HashtabCreate( int init_cap2)
  */
 void HashtabDestroy( hashtab_t *ht)
 {
-  free(ht->table);
-  free(ht);
+  SNetMemFree(ht->table);
+  SNetMemFree(ht);
 }
 
 
@@ -176,7 +177,7 @@ void HashtabPut( hashtab_t *ht, int key, void *value)
 
     /* create a new table */
     ht->capacity = oldcap << 1; /* double */
-    ht->table = (hashtab_entry_t *) malloc(
+    ht->table = (hashtab_entry_t *) SNetMemAlloc(
         ht->capacity * sizeof(hashtab_entry_t));
     for (i=0; i<ht->capacity; i++) {
       ht->table[i].key = HASHTAB_NOT_KEY;
@@ -194,7 +195,7 @@ void HashtabPut( hashtab_t *ht, int key, void *value)
       }
     }
     /* free the old table */
-    free( oldtab);
+    SNetMemFree( oldtab);
   }
 
   /* get a pointer to the table entry */

@@ -17,6 +17,7 @@ void SNetMemFailed(void)
   exit(1);
 }
 
+
 void *SNetMemAlloc( size_t size)
 {
   void *ptr = NULL;
@@ -28,6 +29,7 @@ void *SNetMemAlloc( size_t size)
 
 void *SNetMemResize( void *ptr, size_t size)
 {
+  fprintf(stderr,"\n\n** Fatal Error ** : SNetMemResize called .\n\n");
   if ((ptr = realloc(ptr, size)) == NULL) {
     SNetMemFailed();
   }
@@ -41,6 +43,7 @@ void SNetMemFree( void *ptr)
 
 void* SNetMemAlign( size_t size)
 {
+  fprintf(stderr,"\n\n** Fatal Error ** : SNetMemAlign called .\n\n");
   void *vptr;
   int retval;
   size_t remain = size % LINE_SIZE;

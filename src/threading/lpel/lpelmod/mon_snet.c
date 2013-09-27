@@ -11,6 +11,7 @@
 
 #include "locvec.h"
 #include "moninfo.h"
+#include "memfun.h"
 
 
 
