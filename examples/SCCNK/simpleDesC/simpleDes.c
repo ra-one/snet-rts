@@ -402,15 +402,18 @@ snet_startup_fun_t SNetIdToNet(int id)
 
 int SNetMain__simpleDes(int argc, char* argv[])
 {
-  int i,numWorkers = 0,ret = 0;
+  int i,numWorkers = 0, numWrappers = 0,ret = 0;
   for (i=0; i<argc; i++) {
     if(strcmp(argv[i], "-w") == 0) {
 			/* Number of workers */
 			i++;
 			numWorkers = atoi(argv[i]);
+      numWrappers = atoi(argv[++i]);
 		}
   }
-  SCCInit(0,numWorkers,2,"/shared/nil/nk.host");
+  printf("work %d wrap %d\n",numWorkers,numWrappers);
+  //SCCInit(numWorkers,2,"/shared/nil/nk.host");
+  SCCInit(numWorkers,numWrappers,"/shared/nil/nk.host");
 
   if(SCCIsMaster()){
     C4SNetInit(I__simpleDes__C4SNet, 0);

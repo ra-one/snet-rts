@@ -188,7 +188,8 @@ static void GlobOutputTask(snet_entity_t *ent, void* data)
   SNetMemFree(hnd);
 
   /* signal the threading layer */
-  if (SNetDistribIsRootNode()) SNetDistribGlobalStop();
+  //if (SNetDistribIsRootNode()) SNetDistribGlobalStop();
+  SNetDistribGlobalStop();
 }
 
 void SNetInOutputInit(FILE *file,

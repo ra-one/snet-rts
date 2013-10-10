@@ -2,6 +2,7 @@
 
 #include "distribution.h"
 #include "reference.h"
+#include "/shared/nil/snetInstall/include/scc.h"
 
 static int node_location;
 static bool running = true;
@@ -16,19 +17,24 @@ void SNetDistribInit(int argc, char **argv, snet_info_t *info)
 
 void SNetDistribStart(void) { }
 
+
 void SNetDistribGlobalStop(void)
 {
+  SNETGLOBWAIT = 0;
+  /*
   pthread_mutex_lock(&exitMutex);
   running = false;
   pthread_cond_signal(&exitCond);
-  pthread_mutex_unlock(&exitMutex);
+  pthread_mutex_unlock(&exitMutex);*/
 }
 
 void SNetDistribWaitExit(snet_info_t *info)
 {
+  while(SNETGLOBWAIT);
+  /*
   pthread_mutex_lock(&exitMutex);
   while (running) pthread_cond_wait(&exitCond, &exitMutex);
-  pthread_mutex_unlock(&exitMutex);
+  pthread_mutex_unlock(&exitMutex);*/
   SNetReferenceDestroy();
 }
 

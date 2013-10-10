@@ -175,7 +175,7 @@ int SNetInRun(int argc, char **argv,
   char addr[256];
   int len;
   int port;
-
+  
   /* Parse argv: */
   for(i = 1; i < argc; i++) {
     if(strcmp(argv[i], "-h") == 0) {
@@ -250,7 +250,7 @@ int SNetInRun(int argc, char **argv,
     SNetUtilDebugNotice("No language interfaces were specified by the source program!");
     exit(1);
   }
-
+  
   labels     = SNetInLabelInit(static_labels, number_of_labels);
   interfaces = SNetInInterfaceInit(static_interfaces, number_of_interfaces);
 
