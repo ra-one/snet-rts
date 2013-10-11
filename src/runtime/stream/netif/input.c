@@ -48,27 +48,19 @@ typedef struct {
 static void GlobInputTask(snet_entity_t *ent, void* data)
 {
   handle_t *hnd = (handle_t *)data;
-PRT("input.c: got handle\n")
   if(hnd->buffer != NULL) {
     int i;
     snet_stream_desc_t *outstream = SNetStreamOpen(hnd->buffer, 'w');
-PRT("input.c: after out stream\n")
     FILE *fl = fopen("./input.xml", "r");
     SNetInParserInit( fl, hnd->labels, hnd->interfaces, outstream, ent);
     //SNetInParserInit( hnd->file, hnd->labels, hnd->interfaces, outstream, ent);
-PRT("input.c: after pars init\n")
     i = SNET_PARSE_CONTINUE;
-PRT("input.c: going in while\n")
     while(i != SNET_PARSE_TERMINATE){
       i = SNetInParserParse();
     }
-PRT("input.c: after while\n")
     SNetInParserDestroy();
-PRT("input.c: parse destroyed\n")
     SNetStreamClose( outstream, false);
-PRT("input.c: stream closed\n")
   }
-PRT("input.c: going to free mem\n")
   SNetMemFree(hnd);
 }
 
