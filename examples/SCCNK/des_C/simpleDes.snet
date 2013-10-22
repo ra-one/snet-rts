@@ -1,0 +1,22 @@
+  <metadata>
+   <boxdefault>
+     <interface value="C4SNet" />
+   </boxdefault>
+  </metadata>
+
+net simpleDes {
+
+  box snet_source((<mess>, <size>, <num_node>, <sleep_micro>, <change_mess>, <change_percent>, <window_size>, <thresh_hold>, <skip_update>) -> (pt, key, <size>, <node>));
+  box initP((pt, key, <size>) -> (D, K, <C>, <size>));
+  box subRound((D, K, <C>, <size>) -> (D, K, <C>, <size>));
+  box finalP( (D, K, <C>, <size> ) -> (ct, <size>));
+  box snet_sink((ct, <size>, <node>) -> );
+
+
+} connect snet_source ..
+  (initP .. (subRound*{<C>} if <C==16>) .. finalP)!!<node>
+  //.. [ {ct} -> {} ];
+  .. snet_sink;
+
+
+

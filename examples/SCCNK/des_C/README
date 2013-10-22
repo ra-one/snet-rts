@@ -1,0 +1,4 @@
+input:
+  - plaintext: 8 byte-format (0 -> 127), each message contains 1 block (64 bits = 8 bytes). For larger message, see des-byte
+  - key: 16 hex-number (0 -> 15)
+
