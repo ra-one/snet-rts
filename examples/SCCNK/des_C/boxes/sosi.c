@@ -134,6 +134,7 @@ void *snet_sink(void *hnd, c4snet_data_t *ct, int size, int node) {
   // update array of observe or
   if (start == 1) {
     fprintf(stderr,"sink start %d\n",start);
+    while(*SOSIADDR == 0);
     memcpy((void*)&obs, (const void*)SOSIADDR, sizeof(observer_t*));
     fprintf(stderr,"observer address sink: %p\n",obs);
     start = 0;

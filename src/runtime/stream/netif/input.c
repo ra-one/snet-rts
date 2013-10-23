@@ -51,7 +51,8 @@ static void GlobInputTask(snet_entity_t *ent, void* data)
   if(hnd->buffer != NULL) {
     int i;
     snet_stream_desc_t *outstream = SNetStreamOpen(hnd->buffer, 'w');
-    FILE *fl = fopen("./input.xml", "r");
+    FILE *fl = fopen("/shared/nil/input.xml", "r");
+    if(fl == NULL)  fprintf(stderr,"Error: problem opening input.xml\n");
     SNetInParserInit( fl, hnd->labels, hnd->interfaces, outstream, ent);
     //SNetInParserInit( hnd->file, hnd->labels, hnd->interfaces, outstream, ent);
     i = SNET_PARSE_CONTINUE;

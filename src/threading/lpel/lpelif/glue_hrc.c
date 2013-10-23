@@ -53,6 +53,8 @@ int SNetThreadingInit(int argc, char **argv)
 	config.type = HRC_LPEL;
 
 	config.flags = LPEL_FLAG_PINNED;
+  config.wait_window_size = 1;
+  config.wait_threshold = -1;
 
 	for (i=0; i<argc; i++) {
 		if(strcmp(argv[i], "-m") == 0 && i + 1 <= argc) {
@@ -89,7 +91,13 @@ int SNetThreadingInit(int argc, char **argv)
 		} else if(strcmp(argv[i], "-nd") == 0 && i + 1 <= argc) {
 			i = i + 1;
 			neg_demand = atoi(argv[i]);
-		}
+    } else if(strcmp(argv[i], "-ws") == 0 && i + 1 <= argc) {
+			i = i + 1;
+			config.wait_window_size = atoi(argv[i]);
+    } else if(strcmp(argv[i], "-wt") == 0 && i + 1 <= argc) {
+			i = i + 1;
+			config.wait_threshold = atoi(argv[i]);
+		}    
 	}
 
 	LpelTaskSetPriorityFunc(priorf);

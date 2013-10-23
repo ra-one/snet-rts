@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "C4SNetc.h"
+//#include "/shared/nil/snetInstall/include/scc.h"
 
 #define MAX_NUM                   50
 #define STRAPPEND( dest, src)     dest = strappend(dest, src)
@@ -10,6 +11,7 @@ static char *strappend(char *dest, const char *src)
   char *res;
 
   res = malloc(strlen(dest) + strlen(src) + 1);
+  //res = SCCMallocPtr(strlen(dest) + strlen(src) + 1);
   strcpy(res, dest);
   strcat(res, src);
   free(dest);
