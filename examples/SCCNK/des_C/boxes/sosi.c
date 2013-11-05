@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include "/shared/nil/snetInstall/include/scc.h"
+#include "/shared/nil/snetInstall/include/scc_lpel.h"
 
 
 // allocate by source, access by sink
@@ -76,7 +77,7 @@ void *snet_source(void *hnd, int mess, int s, int num_node, int sleep_micro, int
       cur_sleep = cur_sleep* (1 - change_percent/100.0);
       
       obs->input_rate = 1000.0 * 1000.0/ cur_sleep;
-      printf("update input rate = %f\n", obs->input_rate);  
+      printf("updated input rate = %f\n", obs->input_rate);  
     }
 
     i = j % 5;
@@ -120,7 +121,8 @@ void compare_ir_or() {
   
   //TODO: check when to change the frequency
   if (obs->input_rate - or > obs->thresh_hold) {
-    printf("ah ha!! change cpu frequency please\n");
+    //printf("ah ha!! change cpu frequency please\n");
+    increaseFrequency();
     obs->skip_count = 0;
   }
   else  printf("ouput rate = %f, input_rate = %f, thresh_hold = %d\n", or, obs->input_rate, obs->thresh_hold);

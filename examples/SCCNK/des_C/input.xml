@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <record xmlns="snet-home.org" type="data" mode="textual" interface="C4SNet">
-<tag label="mess">200</tag>
+<tag label="mess">100</tag>
 <tag label="size">16</tag>
 <tag label="num_node">1</tag>
 <tag label="sleep_micro">1500</tag>
-<tag label="change_mess">50</tag>
+<tag label="change_mess">30</tag>
 <tag label="change_percent">50</tag>
 <tag label="window_size">10</tag>
 <tag label="thresh_hold">100</tag>
-<tag label="skip_update">12</tag>
+<tag label="skip_update">10</tag>
 </record>
 <record type="terminate" />
