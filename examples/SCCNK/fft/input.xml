@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<record xmlns="snet-home.org" type="data" mode="textual" interface="C4SNet">
+<tag label="mess">10</tag>
+<tag label="LN">10</tag>
+<tag label="size">2</tag>
+<tag label="num_node">1</tag>
+<tag label="sleep_micro">150</tag>
+<tag label="change_mess">2</tag>
+<tag label="change_percent">50</tag>
+<tag label="window_size">5</tag>
+<tag label="thresh_hold">100</tag>
+<tag label="skip_update">2</tag>
+</record>
+<record type="terminate" />
+

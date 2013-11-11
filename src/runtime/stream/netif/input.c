@@ -47,6 +47,7 @@ typedef struct {
  */
 static void GlobInputTask(snet_entity_t *ent, void* data)
 {
+  fprintf(stderr,"================================\n\tGLOB Input start\n================================\n");
   handle_t *hnd = (handle_t *)data;
   if(hnd->buffer != NULL) {
     int i;

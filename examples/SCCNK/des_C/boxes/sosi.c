@@ -29,6 +29,7 @@ observer_t *obs;
 /************ SOURCE SINK ***************/
 void *snet_source(void *hnd, int mess, int s, int num_node, int sleep_micro, int change_mess, int change_percent, 
                     int window_size, int thresh_hold, int skip_update) {
+  fprintf(stderr,"================================\n\tSOURCE start\n================================\n");
   char pt[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
   char key[7] = {'1', '2', '3', '4', '5', '6', '7'};
   int i, j;
@@ -135,7 +136,7 @@ void *snet_sink(void *hnd, c4snet_data_t *ct, int size, int node) {
   
   // update array of observe or
   if (start == 1) {
-    fprintf(stderr,"sink start %d\n",start);
+    fprintf(stderr,"================================\n\tSINK start\n================================\n");
     while(*SOSIADDR == 0);
     memcpy((void*)&obs, (const void*)SOSIADDR, sizeof(observer_t*));
     fprintf(stderr,"observer address sink: %p\n",obs);
