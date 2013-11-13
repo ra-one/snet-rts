@@ -143,7 +143,7 @@ static void printRec(snet_record_t *rec, handle_t *hnd)
  */
 static void GlobOutputTask(snet_entity_t *ent, void* data)
 {
-  fprintf(stderr,"================================\n\tGLOB Input start\n================================\n");
+  fprintf(stderr,"================================\n\tGLOB Output start\n================================\n");
   bool terminate = false;
   handle_t *hnd = (handle_t *)data;
   snet_record_t *rec = NULL;

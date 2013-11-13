@@ -24,12 +24,16 @@ typedef struct {
 
 // global for source/sink
 observer_t *obs;
+FILE *fout;
 
 //num_node 1 will be one branch of pipeline
 /************ SOURCE SINK ***************/
 void *snet_source(void *hnd, int mess, int s, int num_node, int sleep_micro, int change_mess, int change_percent, 
                     int window_size, int thresh_hold, int skip_update) {
   fprintf(stderr,"================================\n\tSOURCE start\n================================\n");
+  fout = fopen("out/inpRateOut.txt", "w");
+  if (fout == NULL)fprintf(stderr, "Can't open output file!\n");
+  
   char pt[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
   char key[7] = {'1', '2', '3', '4', '5', '6', '7'};
   int i, j;
@@ -66,6 +70,7 @@ void *snet_source(void *hnd, int mess, int s, int num_node, int sleep_micro, int
   
   obs->input_rate = 1000.0 * 1000.0/cur_sleep;   // input rate in message/s
   printf("cur_input rate = %f\n", obs->input_rate);  
+  fprintf(fout,"inRate %f time %f\n", obs->input_rate,SCCGetTime());  
   
   // copy observer address to MPB so sink can get it
   memcpy((void*)SOSIADDR, (const void*)&obs, sizeof(observer_t*));
@@ -75,10 +80,16 @@ void *snet_source(void *hnd, int mess, int s, int num_node, int sleep_micro, int
       counter = 0;
 
       //TODO: change current interval
-      cur_sleep = cur_sleep* (1 - change_percent/100.0);
+      //cur_sleep = cur_sleep* (1 - change_percent/100.0);
+      //int val = (rand()%(max-min));
+      int val = rand()%60;
+      int new_sleep = cur_sleep* (1 - val/100.0);
       
-      obs->input_rate = 1000.0 * 1000.0/ cur_sleep;
-      printf("updated input rate = %f\n", obs->input_rate);  
+      obs->input_rate = 1000.0 * 1000.0/ new_sleep;
+      //obs->input_rate = 1000.0 * 1000.0/ cur_sleep;
+      printf("updated input rate = %f\n", obs->input_rate);
+      fprintf(fout,"inRate %f time %f\n", obs->input_rate,SCCGetTime()); 
+      fflush(fout);
     }
 
     i = j % 5;
@@ -91,6 +102,7 @@ void *snet_source(void *hnd, int mess, int s, int num_node, int sleep_micro, int
     SCCFreePtr(p[i]);
     SCCFreePtr(k[i]);
   }
+
   return hnd;
 }
 
@@ -108,7 +120,7 @@ double time_diff(struct timeval x , struct timeval y)   // in micro second
 }
 
 
-void compare_ir_or() {
+void compare_ir_or(FILE *fileHand) {
   obs->skip_count++;
   if (obs->skip_count < obs->skip_update)
     return;
@@ -119,6 +131,10 @@ void compare_ir_or() {
     or += obs->output_interval[i];
   or = or/obs->window_size;
   or = 1000.0 * 1000.0/ or;   //output rate in message/second
+  
+  fprintf(stderr,"outRate %f\n", or);
+  fprintf(fileHand,"outRate %f time %f\n", or,SCCGetTime());
+  fflush(fileHand);
   
   //TODO: check when to change the frequency
   if (obs->input_rate - or > obs->thresh_hold) {
@@ -137,6 +153,9 @@ void *snet_sink(void *hnd, c4snet_data_t *ct, int size, int node) {
   // update array of observe or
   if (start == 1) {
     fprintf(stderr,"================================\n\tSINK start\n================================\n");
+    fout = fopen("out/outRateOut.txt", "w");
+    if (fout == NULL)fprintf(stderr, "Can't open output file!\n");
+    
     while(*SOSIADDR == 0);
     memcpy((void*)&obs, (const void*)SOSIADDR, sizeof(observer_t*));
     fprintf(stderr,"observer address sink: %p\n",obs);
@@ -148,7 +167,7 @@ void *snet_sink(void *hnd, c4snet_data_t *ct, int size, int node) {
     obs->output_interval[obs->output_index] = time_diff(obs->last_output, tv);
     obs->last_output = tv;
     obs->output_index = (obs->output_index + 1) % obs->window_size;
-    compare_ir_or();
+    compare_ir_or(fout);
   }
 
 
