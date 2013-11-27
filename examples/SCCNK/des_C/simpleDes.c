@@ -461,18 +461,19 @@ snet_startup_fun_t SNetIdToNet(int id)
 
 int SNetMain__simpleDes(int argc, char* argv[])
 {
-  int i,numWorkers = 0, numWrappers = 0,ret = 0;
+  int i,numWorkers = 0, numWrappers = 0,dvfs =0, ret = 0;
   for (i=0; i<argc; i++) {
     if(strcmp(argv[i], "-w") == 0) {
 			/* Number of workers */
-			i++;
-			numWorkers = atoi(argv[i]);
+			//i++;
+			numWorkers = atoi(argv[++i]);
       numWrappers = atoi(argv[++i]);
+      dvfs = atoi(argv[++i]);
 		}
   }
-  //printf("work %d wrap %d\n",numWorkers,numWrappers);
+  printf("work %d wrap %d dvfs %d\n",numWorkers,numWrappers,dvfs);
   //SCCInit(numWorkers,2,"/shared/nil/nk.host");
-  SCCInit(numWorkers,numWrappers,"/shared/nil/nk.host");
+  SCCInit(numWorkers,numWrappers,dvfs,"/shared/nil/nk.host");
 
   if(SCCIsMaster()){
     C4SNetInit(I__simpleDes__C4SNet, 0);

@@ -62,6 +62,7 @@ static void GlobInputTask(snet_entity_t *ent, void* data)
     }
     SNetInParserDestroy();
     SNetStreamClose( outstream, false);
+    fprintf(stderr,"================================\n\tGLOB Input Finished\n================================\n");
   }
   SNetMemFree(hnd);
 }
