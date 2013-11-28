@@ -5,9 +5,9 @@
 #include "/shared/nil/snetInstall/include/scc.h"
 
 static int node_location;
-static bool running = true;
-static pthread_cond_t exitCond = PTHREAD_COND_INITIALIZER;
-static pthread_mutex_t exitMutex = PTHREAD_MUTEX_INITIALIZER;
+//static bool running = true;
+//static pthread_cond_t exitCond = PTHREAD_COND_INITIALIZER;
+//static pthread_mutex_t exitMutex = PTHREAD_MUTEX_INITIALIZER;
 
 void SNetDistribInit(int argc, char **argv, snet_info_t *info)
 {
@@ -20,7 +20,7 @@ void SNetDistribStart(void) { }
 
 void SNetDistribGlobalStop(void)
 {
-  SNETGLOBWAIT = 0;
+  SNETGLOBWAIT = SNETGLOBWAITVAL;
   /*
   pthread_mutex_lock(&exitMutex);
   running = false;
@@ -30,7 +30,7 @@ void SNetDistribGlobalStop(void)
 
 void SNetDistribWaitExit(snet_info_t *info)
 {
-  while(SNETGLOBWAIT);
+  while(SNETGLOBWAIT != SNETGLOBWAITVAL);
   /*
   pthread_mutex_lock(&exitMutex);
   while (running) pthread_cond_wait(&exitCond, &exitMutex);
