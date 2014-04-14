@@ -43,7 +43,7 @@ size_t GetStacksize(snet_entity_descr_t descr)
 		/* we do not want an unhandled case here */
 		assert(0);
 	}
-
+  printf("========================================================= stack_size %lu \n",stack_size);
 	return( stack_size);
 }
 

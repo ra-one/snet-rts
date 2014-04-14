@@ -414,7 +414,7 @@ int SNetMain__simpleDes(int argc, char* argv[])
   }
   //printf("work %d wrap %d\n",numWorkers,numWrappers);
   //SCCInit(numWorkers,2,"/shared/nil/nk.host");
-  SCCInit(numWorkers,numWrappers,"/shared/nil/nk.host");
+  SCCInit(numWorkers,numWrappers,0,"/shared/nil/nk.host");
 
   if(SCCIsMaster()){
     C4SNetInit(I__simpleDes__C4SNet, 0);
