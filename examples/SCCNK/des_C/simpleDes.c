@@ -462,6 +462,9 @@ snet_startup_fun_t SNetIdToNet(int id)
 int SNetMain__simpleDes(int argc, char* argv[])
 {
   int i,numWorkers = 0, numWrappers = 0,dvfs =0, ret = 0;
+  char *hostFL, *masterFL;
+  masterFL = "/shared/nil/mySnet/snet-rts/examples/SCCNK/des_C/out/master.txt";
+  
   for (i=0; i<argc; i++) {
     if(strcmp(argv[i], "-w") == 0) {
 			/* Number of workers */
@@ -469,11 +472,14 @@ int SNetMain__simpleDes(int argc, char* argv[])
 			numWorkers = atoi(argv[++i]);
       numWrappers = atoi(argv[++i]);
       dvfs = atoi(argv[++i]);
+      hostFL = argv[++i];
+      break;
 		}
   }
-  printf("work %d wrap %d dvfs %d\n",numWorkers,numWrappers,dvfs);
-  //SCCInit(numWorkers,2,"/shared/nil/nk.host");
-  SCCInit(numWorkers,numWrappers,dvfs,"/shared/nil/nk.host");
+  
+  printf("work %d wrap %d dvfs %d, host %s, master %s\n",numWorkers,numWrappers,dvfs,hostFL,masterFL);
+  
+  SCCInit(numWorkers,numWrappers,dvfs,hostFL,masterFL);
 
   if(SCCIsMaster()){
     C4SNetInit(I__simpleDes__C4SNet, 0);
