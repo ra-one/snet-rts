@@ -17,7 +17,7 @@ FILE *fout;
 void *snet_source(void *hnd, int mess, int s, int num_node, int sleep_micro, int change_mess, int change_percent, 
                     int window_size, int thresh_hold, int skip_update) {
   fprintf(stderr,"================================\n\tSOURCE start\n================================\n");
-  fout = fopen("out/source.txt", "w");
+  fout = fopen("/shared/nil/mySnet/snet-rts/examples/SCCNK/des_C/out/source.txt", "w");
   if (fout == NULL)fprintf(stderr, "Can't open output file!\n");
   
   char pt[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
@@ -164,7 +164,7 @@ void *snet_sink(void *hnd, c4snet_data_t *ct, int size, int node) {
   // update array of observe or
   if (start == 1) {
     fprintf(stderr,"================================\n\tSINK start\n================================\n");
-    fout = fopen("out/sink.txt", "w");
+    fout = fopen("/shared/nil/mySnet/snet-rts/examples/SCCNK/des_C/out/sink.txt", "w");
     if (fout == NULL)fprintf(stderr, "Can't open output file!\n");
     
     while(*SOSIADDR == 0);
@@ -174,7 +174,6 @@ void *snet_sink(void *hnd, c4snet_data_t *ct, int size, int node) {
     obs->last_output = SCCGetTime();
   } else {
     double tv = SCCGetTime();
-    //obs->output_interval[obs->output_index] = ((tv*1000000)-(obs->last_output*1000000));
     obs->output_interval[obs->output_index] = ((tv*1000000)-(obs->last_output*1000000));
     obs->last_output = tv;
     obs->output_index = (obs->output_index + 1) % obs->window_size;

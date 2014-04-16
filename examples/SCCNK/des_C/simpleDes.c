@@ -459,26 +459,25 @@ snet_startup_fun_t SNetIdToNet(int id)
   return NULL;
 }
 
+
 int SNetMain__simpleDes(int argc, char* argv[])
 {
-  int i,numWorkers = 0, numWrappers = 0,dvfs =0, ret = 0;
-  char *hostFL, *masterFL;
+  FILE *fd;
+  char *key = NULL;
+  char *value,*hostFL,*masterFL;
+  size_t len = 0;
+  int numWorkers = 0, numWrappers = 0,dvfs =0, ret = 0;
+   
+  fd = fopen ("/shared/nil/input.txt","r");
+
+	getline(&key, &len, fd); strtok_r(key, "=", &value); numWorkers=atoi(value);
+	getline(&key, &len, fd); strtok_r(key, "=", &value); numWrappers=atoi(value);
+	getline(&key, &len, fd); strtok_r(key, "=", &value); dvfs=atoi(value);
+  getline(&key, &len, fd); strtok_r(key, "=", &hostFL); hostFL[strcspn ( hostFL, "\n" )] = '\0';
   masterFL = "/shared/nil/mySnet/snet-rts/examples/SCCNK/des_C/out/master.txt";
   
-  for (i=0; i<argc; i++) {
-    if(strcmp(argv[i], "-w") == 0) {
-			/* Number of workers */
-			//i++;
-			numWorkers = atoi(argv[++i]);
-      numWrappers = atoi(argv[++i]);
-      dvfs = atoi(argv[++i]);
-      hostFL = argv[++i];
-      break;
-		}
-  }
-  
-  printf("work %d wrap %d dvfs %d, host %s, master %s\n",numWorkers,numWrappers,dvfs,hostFL,masterFL);
-  
+  printf("input work %d wrap %d dvfs %d, host %s, master %s\n",numWorkers,numWrappers,dvfs,hostFL,masterFL);
+  fflush(stdout);
   SCCInit(numWorkers,numWrappers,dvfs,hostFL,masterFL);
 
   if(SCCIsMaster()){
@@ -499,4 +498,45 @@ int SNetMain__simpleDes(int argc, char* argv[])
 
   return( ret);
 }
+/*
+int SNetMain__simpleDes(int argc, char* argv[])
+{
+  int i,numWorkers = 0, numWrappers = 0,dvfs =0, ret = 0;
+  char *hostFL, *masterFL;
+  masterFL = "/shared/nil/mySnet/snet-rts/examples/SCCNK/des_C/out/master.txt";
 
+  for (i=0; i<argc; i++) {
+    if(strcmp(argv[i], "-w") == 0) {
+			//Number of workers 
+			//i++;
+			numWorkers = atoi(argv[++i]);
+      numWrappers = atoi(argv[++i]);
+      dvfs = atoi(argv[++i]);
+      hostFL = argv[++i];
+      break;
+		}
+  }
+  
+  printf("argc work %d wrap %d dvfs %d, host %s, master %s\n",numWorkers,numWrappers,dvfs,hostFL,masterFL);
+  fflush(stdout);
+  SCCInit(numWorkers,numWrappers,dvfs,hostFL,masterFL);
+
+  if(SCCIsMaster()){
+    C4SNetInit(I__simpleDes__C4SNet, 0);
+  
+    ret = SNetInRun(argc, argv,
+              snet_simpleDes_labels,
+              SNET__simpleDes__NUMBER_OF_LABELS,
+              snet_simpleDes_interfaces,
+              SNET__simpleDes__NUMBER_OF_INTERFACES,
+              SNet__simpleDes___simpleDes);
+
+    SNetInterfacesDestroy();
+  }else{
+    ret = SNetInRunWorker(argc, argv);
+  }
+  SCCStop();
+
+  return( ret);
+}
+*/
