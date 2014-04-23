@@ -21,7 +21,7 @@
 
 // To activate/deactivate user event logging (message trace).
 // Activate this via configure, or compile_cmd, or Makefile.
-// #define USE_USER_EVENT_LOGGING
+#define USE_USER_EVENT_LOGGING
 
 
 typedef union moninfo_types snet_moninfo_types_t;

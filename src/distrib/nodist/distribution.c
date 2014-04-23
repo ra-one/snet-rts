@@ -11,7 +11,8 @@ static int node_location;
 
 void SNetDistribInit(int argc, char **argv, snet_info_t *info)
 {
-  node_location = 0;
+  //node_location = 0;
+  node_location = SCCGetNodeID(); // physical location of core
   SNetReferenceInit();
 }
 

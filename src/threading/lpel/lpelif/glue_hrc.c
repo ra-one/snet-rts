@@ -19,11 +19,6 @@
 /* put this into assignment/monitoring module */
 #include "distribution.h"
 
-
-static int num_cpus = 0;
-static int num_workers = -1;
-static int proc_others = 0;
-static int proc_workers = -1;
 static int rec_lim = -1;
 
 #ifdef USE_LOGGING
@@ -48,7 +43,7 @@ int SNetThreadingInit(int argc, char **argv)
 
 	memset(&config, 0, sizeof(lpel_config_t));
 
-	int priorf = 1;
+	int priorf = 14;
 
 	config.type = HRC_LPEL;
 
@@ -69,15 +64,16 @@ int SNetThreadingInit(int argc, char **argv)
 		} else if(strcmp(argv[i], "-co") == 0 && i + 1 <= argc) {
 			/* Number of cores for others */
 			i = i + 1;
-			proc_others = atoi(argv[i]);
+			config.proc_others = atoi(argv[i]);
 		} else if(strcmp(argv[i], "-cw") == 0 && i + 1 <= argc) {
 			/* Number of cores for others */
 			i = i + 1;
-			proc_workers = atoi(argv[i]);
+			config.proc_workers = atoi(argv[i]);
 		} else if(strcmp(argv[i], "-w") == 0 && i + 1 <= argc) {
 			/* Number of workers */
 			i = i + 1;
-			num_workers = atoi(argv[i]);
+      config.num_workers = atoi(argv[i]);
+      config.proc_workers = atoi(argv[i]);
 		} else if(strcmp(argv[i], "-sosi") == 0) {
 			sosi_placement = true;
 		} else if (strcmp(argv[i], "-np") == 0) { // no pinned
@@ -127,27 +123,6 @@ int SNetThreadingInit(int argc, char **argv)
 		}
 	}
 
-#endif
-
-	/* determine number of cpus */
-	if ( 0 != LpelGetNumCores( &num_cpus) ) {
-		SNetUtilDebugFatal("Could not determine number of cores!\n");
-		assert(0);
-	}
-
-	if (num_workers == -1)
-		config.num_workers = num_cpus;
-	else
-		config.num_workers = num_workers;
-
-	if (proc_workers == -1)
-		config.proc_workers = num_cpus;
-	else
-		config.proc_workers = proc_workers;
-
-	config.proc_others = proc_others;
-
-#ifdef USE_LOGGING
 	/* initialise monitoring module */
 	SNetThreadingMonInit(&config.mon, SNetDistribGetNodeId(), mon_flags);
 #endif
@@ -159,6 +134,90 @@ int SNetThreadingInit(int argc, char **argv)
 	return 0;
 }
 
+int SNetThreadingInitWorker(int argc, char **argv)
+{
+#ifdef USE_LOGGING
+	char *mon_elts = NULL;
+#endif
+
+	lpel_config_t config;
+	int i;
+	int neg_demand = 0;
+
+	memset(&config, 0, sizeof(lpel_config_t));
+
+	int priorf = 14;
+
+	config.type = HRC_LPEL;
+
+	config.flags = LPEL_FLAG_PINNED;
+  config.wait_window_size = 1;
+  config.wait_threshold = -1;
+  config.proc_others = 0;
+
+	for (i=0; i<argc; i++) {
+		if(strcmp(argv[i], "-m") == 0 && i + 1 <= argc) {
+			/* Monitoring level */
+			i = i + 1;
+#ifdef USE_LOGGING
+			mon_elts = argv[i];
+#endif
+		} else if(strcmp(argv[i], "-w") == 0 && i + 1 <= argc) {
+			/* Number of workers */
+			i = i + 1;
+			config.num_workers = atoi(argv[i]);
+      config.proc_workers = atoi(argv[i]);
+		} else if(strcmp(argv[i], "-pf") == 0 && i + 1 <= argc) {
+			i = i + 1;
+			priorf = atoi(argv[i]);
+    } else if(strcmp(argv[i], "-nd") == 0 && i + 1 <= argc) {
+			i = i + 1;
+			neg_demand = atoi(argv[i]);
+    } else if(strcmp(argv[i], "-rl") == 0 && i + 1 <= argc) {
+			i = i + 1;
+			rec_lim = atoi(argv[i]);
+		}
+	}
+
+  LpelTaskSetPriorityFunc(priorf);
+	LpelTaskSetNegLim(neg_demand);
+  
+#ifdef USE_LOGGING
+	char fname[20+1];
+	if (mon_elts != NULL) {
+		if (strchr(mon_elts, MON_ALL_FLAG) != NULL) {
+			mon_flags = (1<<7) - 1;
+		} else {
+			if (strchr(mon_elts, MON_MAP_FLAG) != NULL) mon_flags |= SNET_MON_MAP;
+			if (strchr(mon_elts, MON_TIME_FLAG) != NULL) mon_flags |= SNET_MON_TIME;
+			if (strchr(mon_elts, MON_WORKER_FLAG) != NULL) mon_flags |= SNET_MON_WORKER;
+			if (strchr(mon_elts, MON_TASK_FLAG) != NULL) mon_flags |= SNET_MON_TASK;
+			if (strchr(mon_elts, MON_STREAM_FLAG) != NULL) mon_flags |= SNET_MON_STREAM;
+			if (strchr(mon_elts, MON_MESSAGE_FLAG) != NULL) mon_flags |= SNET_MON_MESSAGE;
+			if (strchr(mon_elts, MON_LOAD_FLAG) != NULL) mon_flags |= SNET_MON_LOAD;
+		}
+
+		if ( mon_flags & SNET_MON_MAP) {
+			snprintf(fname, 20, "n%02d_tasks.map", SNetDistribGetNodeId() );
+			/* create a map file */
+			mapfile = fopen(fname, "w");
+			assert( mapfile != NULL);
+			(void) fprintf(mapfile, "%s%c", LOG_FORMAT_VERSION, END_LOG_ENTRY);
+		}
+	}
+  
+	/* initialise monitoring module */
+	SNetThreadingMonInit(&config.mon, SNetDistribGetNodeId(), mon_flags);
+#endif
+
+	LpelInit(&config);
+
+	if (LpelStart(&config)) SNetUtilDebugFatal("Could not initialize LPEL!");
+  LpelCleanup();
+	return 0;
+}
+
+/*
 int SNetThreadingInitWorker(int argc, char **argv)
 {
 
@@ -175,7 +234,7 @@ int SNetThreadingInitWorker(int argc, char **argv)
   
 	for (i=0; i<argc; i++) {
     if(strcmp(argv[i], "-w") == 0) {
-			/* Number of workers */
+			// Number of workers 
       i++;
 			config.num_workers = atoi(argv[i]);
       config.proc_workers = atoi(argv[i]);
@@ -188,6 +247,7 @@ int SNetThreadingInitWorker(int argc, char **argv)
   LpelCleanup();
 	return 0;
 }
+*/
 
 /*****************************************************************************
  * Spawn a new task

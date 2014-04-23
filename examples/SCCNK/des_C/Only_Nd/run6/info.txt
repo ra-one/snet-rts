@@ -1,0 +1,29 @@
+./simpleDes-lpel_hrc-nodist -sosi -m tTM -nd 12 -w 40
+
+Messages / Millisecond
+Input Rate = 0.000156080611762
+Throughput = 9.37331926877e-05
+Latency = 355683.473043
+Average Execution Time: 1141.9593788
+
+
+
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<record xmlns="snet-home.org" type="data" mode="textual" interface="C4SNet">
+<tag label="mess">100</tag>
+<tag label="size">4096</tag>
+<tag label="num_node">6</tag>
+<tag label="sleep_micro">5000</tag>
+<tag label="change_mess">100000</tag>
+<tag label="change_percent">50</tag>
+<tag label="window_size">5</tag>
+<tag label="thresh_hold">90</tag>
+<tag label="skip_update">10</tag>
+</record>
+<record type="terminate" />
+
+
+num_workers=40
+num_wrappers=4
+enable_dvfs=0
+host_file=/shared/nil/s6

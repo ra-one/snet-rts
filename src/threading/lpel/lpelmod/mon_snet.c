@@ -925,7 +925,7 @@ void SNetThreadingMonInit(lpel_monitoring_cb_t *cb, int node, int flag)
 		cb->stream_wakeup       = MonCbStreamWakeup;
 	}
 
-	/* monitoring used for task migration based on task waiting time */
+	/* monitoring used for task migration based on task waiting time *//*
 	pthread_mutex_init(&global_lock, NULL);
 	if (mon_flags & SNET_MON_WAIT_PROP) {
 		num_workers = cb->num_workers;
@@ -944,7 +944,7 @@ void SNetThreadingMonInit(lpel_monitoring_cb_t *cb, int node, int flag)
 		cb->worker_most_wait_prop = MonCbWorkerMostWaitProp;
 		cb->get_global_wait_prop 	= MonCbGetGlobalWaitProp;
 		cb->get_worker_wait_prop 	= MonCbGetWorkerWaitProp;
-	}
+	}*/
 
 
 	/* set up record call backs */

@@ -1,0 +1,47 @@
+-w 4
+
+Messages / Millisecond
+Input Rate = 8.12474029039e-05
+Throughput = 5.79740940478e-05
+Latency = 574125.946824
+Average Execution Time: 1742.435839
+
+-w 10
+
+Messages / Millisecond
+Input Rate = 0.000227368559036
+Throughput = 0.000162016191587
+Latency = 215244.211793
+Average Execution Time: 659.068038714
+
+-w 18
+
+Messages / Millisecond
+Input Rate = 0.000165883913935
+Throughput = 0.000137797916835
+Latency = 246599.219113
+Average Execution Time: 767.369351091
+
+-w 26
+
+Messages / Millisecond
+Input Rate = 0.000155356796702
+Throughput = 9.16483643926e-05
+Latency = 351787.247012
+Average Execution Time: 1129.7179834
+
+-w 32
+
+Messages / Millisecond
+Input Rate = 0.000136393841825
+Throughput = 8.22863834968e-05
+Latency = 391036.764905
+Average Execution Time: 1255.62211492
+
+-w 40
+
+Messages / Millisecond
+Input Rate = 0.000156080611762
+Throughput = 9.37331926877e-05
+Latency = 355683.473043
+Average Execution Time: 1141.9593788
