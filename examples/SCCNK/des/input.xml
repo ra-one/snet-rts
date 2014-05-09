@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<record xmlns="snet-home.org" type="data" mode="textual" interface="C4SNet">
+<tag label="mess">1000</tag>
+<tag label="size">1024</tag>
+<tag label="num_node">5</tag>
+</record>
+<record type="terminate" />

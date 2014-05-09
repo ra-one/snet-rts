@@ -24,8 +24,7 @@
 static int mon_node = -1;
 static int mon_flags = 0;
 
-
-static const char *prefix = "mon_";
+static const char *prefix = "/shared/nil/Out/mon_";
 static const char *suffix = ".log";
 static const char end_entry = END_LOG_ENTRY;
 static const char message_trace_sep = MESSAGE_TRACE_SEPARATOR;

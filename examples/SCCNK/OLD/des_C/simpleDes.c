@@ -474,7 +474,7 @@ int SNetMain__simpleDes(int argc, char* argv[])
 	getline(&key, &len, fd); strtok_r(key, "=", &value); numWrappers=atoi(value);
 	getline(&key, &len, fd); strtok_r(key, "=", &value); dvfs=atoi(value);
   getline(&key, &len, fd); strtok_r(key, "=", &hostFL); hostFL[strcspn ( hostFL, "\n" )] = '\0';
-  masterFL = "/shared/nil/mySnet/snet-rts/examples/SCCNK/des_C/out/master.txt";
+  masterFL = "/shared/nil/Out/master.txt";
   
   printf("input work %d wrap %d dvfs %d, host %s, master %s\n",numWorkers,numWrappers,dvfs,hostFL,masterFL);
   fflush(stdout);

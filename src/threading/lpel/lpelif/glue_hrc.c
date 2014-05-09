@@ -19,11 +19,14 @@
 /* put this into assignment/monitoring module */
 #include "distribution.h"
 
+#define TSK_DBG //
+
 static int rec_lim = -1;
 
 #ifdef USE_LOGGING
 static int mon_flags = 0;
 static FILE *mapfile = NULL;
+static const char *filePath = "/shared/nil/Out/";
 #endif
 
 /**
@@ -100,7 +103,7 @@ int SNetThreadingInit(int argc, char **argv)
 	LpelTaskSetNegLim(neg_demand);
 
 #ifdef USE_LOGGING
-	char fname[20+1];
+	char fname[63+1];
 	if (mon_elts != NULL) {
 		if (strchr(mon_elts, MON_ALL_FLAG) != NULL) {
 			mon_flags = (1<<7) - 1;
@@ -115,7 +118,7 @@ int SNetThreadingInit(int argc, char **argv)
 		}
 
 		if ( mon_flags & SNET_MON_MAP) {
-			snprintf(fname, 20, "n%02d_tasks.map", SNetDistribGetNodeId() );
+      snprintf(fname, 63, "%sn%02d_tasks.map", filePath,SNetDistribGetNodeId() );
 			/* create a map file */
 			mapfile = fopen(fname, "w");
 			assert( mapfile != NULL);
@@ -183,7 +186,7 @@ int SNetThreadingInitWorker(int argc, char **argv)
 	LpelTaskSetNegLim(neg_demand);
   
 #ifdef USE_LOGGING
-	char fname[20+1];
+	char fname[63+1];
 	if (mon_elts != NULL) {
 		if (strchr(mon_elts, MON_ALL_FLAG) != NULL) {
 			mon_flags = (1<<7) - 1;
@@ -198,7 +201,7 @@ int SNetThreadingInitWorker(int argc, char **argv)
 		}
 
 		if ( mon_flags & SNET_MON_MAP) {
-			snprintf(fname, 20, "n%02d_tasks.map", SNetDistribGetNodeId() );
+			snprintf(fname, 63, "%sn%02d_tasks.map", filePath,SNetDistribGetNodeId() );
 			/* create a map file */
 			mapfile = fopen(fname, "w");
 			assert( mapfile != NULL);
@@ -312,6 +315,7 @@ int SNetThreadingSpawn(snet_entity_t *ent)
 			|| type == ENTITY_other)	// wrappers
 		location = LPEL_MAP_OTHERS;
 
+  TSK_DBG("\n\nSpawn Start Taskname: %s\n",name);
 	lpel_task_t *t = LpelTaskCreate(
 			location,
 			//(lpel_taskfunc_t) func,
@@ -319,10 +323,9 @@ int SNetThreadingSpawn(snet_entity_t *ent)
 			ent,
 			GetStacksize(type)
 	);
-
 	if (location != LPEL_MAP_OTHERS)
 			setTaskRecLimit(type, t);
-
+  
 #ifdef USE_LOGGING
 	if (mon_flags & SNET_MON_TASK){
 		mon_task_t *mt = SNetThreadingMonTaskCreate(
@@ -332,16 +335,14 @@ int SNetThreadingSpawn(snet_entity_t *ent)
 		LpelTaskMonitor(t, mt);
 		/* if we monitor the task, we make an entry in the map file */
 	}
-
 	if ((mon_flags & SNET_MON_MAP) && mapfile) {
 		int tid = LpelTaskGetId(t);
 		(void) fprintf(mapfile, "%d%s%c", tid, SNetEntityStr(ent), END_LOG_ENTRY);
 	}
-
-
 #endif
 
 	LpelTaskStart(t);
+  TSK_DBG("Spawn End Taskname: %s\n\n",name);
 	return 0;
 }
 
