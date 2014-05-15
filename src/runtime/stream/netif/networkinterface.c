@@ -261,7 +261,7 @@ int SNetInRun(int argc, char **argv,
 
   (void) SNetThreadingInit(argc, argv);
 
-  SNetObserverInit(labels, interfaces);
+  //SNetObserverInit(labels, interfaces);
 
   locvec = SNetLocvecCreate();
   SNetLocvecSet(info, locvec);
@@ -292,7 +292,7 @@ int SNetInRun(int argc, char **argv,
   SNetLocvecDestroy(locvec);
 
   /* destroy observers */
-  SNetObserverDestroy();
+  //SNetObserverDestroy();
 
   SNetInLabelDestroy(labels);
   SNetInInterfaceDestroy(interfaces);
