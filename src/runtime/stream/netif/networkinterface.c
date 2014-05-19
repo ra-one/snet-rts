@@ -261,7 +261,7 @@ int SNetInRun(int argc, char **argv,
 
   (void) SNetThreadingInit(argc, argv);
 
-  //SNetObserverInit(labels, interfaces);
+  //SNetObserverInit(labels, interfaces); 
 
   locvec = SNetLocvecCreate();
   SNetLocvecSet(info, locvec);
