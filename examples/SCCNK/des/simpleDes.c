@@ -797,8 +797,6 @@ int SNetMain__simpleDes(int argc, char* argv[])
   getline(&key, &len, fd); strtok_r(key, "=", &hostFL); hostFL[strcspn ( hostFL, "\n" )] = '\0';
   masterFL = "/shared/nil/Out/master.txt";
   
-  printf("work %d wrap %d dvfs %d, host %s, master %s\n\n",numWorkers,numWrappers,dvfs,hostFL,masterFL);
-  fflush(stdout);
   SCCInit(numWorkers,numWrappers,dvfs,hostFL,masterFL);
 
   if(SCCIsMaster()){

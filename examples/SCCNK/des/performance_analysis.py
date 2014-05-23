@@ -17,13 +17,18 @@ def extract(f, c):
 
 def perf_cal(im, om, m, stable):
   if len(im) * m != len(om):
-    assert False, "input/output does not match"
+    print "input/output does not match"
+    print "input " + str(len(im)) + " output " +  str(len(om))
+    new_len = min(len(im), len(om)/m)
+  else:
+    new_len = len(im)
+    #assert False, "input/output does not match"
   tp = 0
   cr = 0
   lat = 0
   prev_tp = om[m * (stable + 1) - 1]
   prev_cr = im[stable]
-  for i in range(stable, len(im) - stable):
+  for i in range(stable, new_len - stable):
     ts1 = im[i]
     ts2 = om[i * m + m - 1]
     l = ts2 - ts1
@@ -71,7 +76,49 @@ def exe_time():
     splited = re.split('#',rck_f.readline())
     exe_tm.append(float(splited[2]))
     rck_f.close()
-  return (sum(exe_tm)/len(exe_tm))
+  et = (sum(exe_tm)/len(exe_tm))
+  print "Average Execution Time    " + str(et) + " S (" +str(et/60) + " M)"
+
+
+def avg_waiting_workers():
+  wit_work = []
+  wit_task = []
+  rck_f = open(d + "/waitingTask.log", 'r')
+  for line in rck_f:
+    splited = re.split('##',line.strip())
+    wit_task.append(int(splited[0]))
+    wit_work.append(int(splited[1]))
+  rck_f.close()
+  print "Average Waiting Workers   " + str(sum(wit_work)/len(wit_work))
+  print "Max Waiting Workers       " + str(max(wit_work))
+  print "Average Waiting Tasks     " + str(sum(wit_task)/len(wit_task))
+  print "Max Task                  " + str(max(wit_task))
+
+def waiting_worker_process(s):
+  m = []
+  wt = []
+  for l in s:
+    x = re.split('I|O|R|Z|A|;| ',l)
+    if len(x) > 2:
+      start = int(x[0])-int(x[2])
+      m.append([int(x[1]),start,int(x[0]),int(x[2])])
+      wt.append(start)  
+  wt = [(x - y)/1000000.0 for (x, y) in zip(wt[1:], wt[:-1])]
+  print "Min = " + str(min(wt)) + "ms"
+  print "Max = " + str(max(wt)) + "ms"
+  print "Average = " + str(sum(wt)/float(len(wt))) + "ms\n"
+ 
+
+def waiting_worker_time(d):
+  wlf = glob.glob(d + "/mon_n*_worker[0-9][0-9].log")
+  for fl in wlf:
+    inputFile = open(fl,'r')
+    inputString=inputFile.read()
+    inputFile.close()
+    inputList = [x.strip() for x in inputString.split('#')]
+    del inputList[0]
+    print "\n" + fl
+    waiting_worker_process(inputList)
   
 if __name__=="__main__":
   try:
@@ -99,9 +146,11 @@ if __name__=="__main__":
     assert False, "Specify directory of log files"
     
   (cr, tp, lat) = tp_latency(d, mul, stable)
-  et = exe_time()
   print "Messages / Millisecond"
-  print "Input Rate = " + str(cr)
-  print "Throughput = " + str(tp)
-  print "Latency = " + str(lat)
-  print "Average Execution Time: " + str(et)
+
+  print "Input Rate                " + str(cr)
+  print "Throughput                " + str(tp)
+  print "Latency                   " + str(lat)
+  avg_waiting_workers()
+  exe_time()
+  #waiting_worker_time(d)

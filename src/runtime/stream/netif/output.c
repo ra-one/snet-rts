@@ -143,7 +143,7 @@ static void printRec(snet_record_t *rec, handle_t *hnd)
  */
 static void GlobOutputTask(snet_entity_t *ent, void* data)
 {
-  fprintf(stderr,"================================\n\tGLOB Output start\n================================\n");
+  printf("================================\n\tGLOB Output start\n================================\n");
   bool terminate = false;
   handle_t *hnd = (handle_t *)data;
   snet_record_t *rec = NULL;
@@ -153,7 +153,6 @@ static void GlobOutputTask(snet_entity_t *ent, void* data)
     snet_stream_desc_t *instream = SNetStreamOpen(hnd->buffer, 'r');
 
     while(!terminate){
-      printf("Record received %d\n",terminate);
       rec = SNetStreamRead( instream);
       if(rec != NULL) {
         switch(SNetRecGetDescriptor(rec)) {
@@ -181,7 +180,7 @@ static void GlobOutputTask(snet_entity_t *ent, void* data)
         SNetRecDestroy(rec);
       }
     }
-    fprintf(stderr,"\n================================\n\tGLOB Output Finished\n================================\n");
+    printf("\n================================\n\tGLOB Output Finished\n================================\n");
     fflush(hnd->file);
     fprintf(hnd->file, "\n");
 
@@ -191,7 +190,6 @@ static void GlobOutputTask(snet_entity_t *ent, void* data)
 
   /* signal the threading layer */
   //if (SNetDistribIsRootNode()) SNetDistribGlobalStop();
-  printf("Goint to call global distrib stop\n");
   SNetDistribGlobalStop();
 }
 
