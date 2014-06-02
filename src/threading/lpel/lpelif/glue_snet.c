@@ -37,7 +37,7 @@ size_t GetStacksize(snet_entity_descr_t descr)
 		break;
 	case ENTITY_box:
 	case ENTITY_other:
-		stack_size = 8*1024*1024; /*8MB*/
+		stack_size = 256*1024; /*265KB*/
 		break;
 	default:
 		/* we do not want an unhandled case here */
