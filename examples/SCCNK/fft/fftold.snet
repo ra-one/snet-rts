@@ -1,0 +1,19 @@
+  <metadata>
+   <boxdefault>
+     <interface value="C4SNet" />
+   </boxdefault>
+  </metadata>
+
+net fft {
+
+  box snet_source((<mess>, <LN>, <size>, <num_node>) -> (X, <LN>, <size>, <node>));
+  box initP((X, <LN>, <size>, <node>) -> (X, Y, W, <S>, <LN>, <size>, <node>));
+  box stepP((X, Y, W, <S>, <LN>, <size>, <node>) -> (X, Y, W, <S>, <LN>, <size>, <node>));
+  box snet_sink((X, Y, W, <S>, <LN>, <size>, <node>) -> );
+
+
+} connect snet_source
+..  (initP
+.. (stepP*{<S>, <LN>} if <S==LN>)
+  ) !!<node>
+.. snet_sink;

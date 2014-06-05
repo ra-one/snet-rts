@@ -949,7 +949,14 @@ void SNetThreadingMonInit(lpel_monitoring_cb_t *cb, int node, int flag)
 	/* set up record call backs */
 	cb->rectype_data = SNetMonRecTypeData;
 	/* initialize timing */
-	LpelTimingNow(&monitoring_begin);
+  LpelTimingIni(&monitoring_begin);
+  /*
+	if (monitoring_begin.tv_sec == 0) {
+		printf( "%lu", monitoring_begin.tv_nsec);
+	} else {
+    printf("%lu%09lu",(unsigned long) monitoring_begin.tv_sec, (monitoring_begin.tv_nsec));
+	}
+	LpelTimingNow(&monitoring_begin);*/
 #endif
 }
 

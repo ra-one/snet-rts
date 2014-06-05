@@ -51,13 +51,15 @@ def perf_cal(im, om, m, stable):
 
 
 def tp_latency(d, m, stable):
-  rf = glob.glob(d + "/mon_n*_snet_source.log")
-  assert len(rf) == 1, "None or more than 2 source file"
-  rf = rf[0]
-  
   kf = glob.glob(d + "/mon_n*_snet_sink.log")
   assert len(kf) == 1, "None or more than 2 sink file"
   kf = kf[0]
+  
+  rf = glob.glob(d + "/mon_n*_snet_source.log")
+  print len(rf)
+  assert len(rf) == 1, "None or more than 2 source file"
+  rf = rf[0]
+   
   
   source_f = open(rf, 'r')
   sink_f = open(kf, 'r')
@@ -93,32 +95,7 @@ def avg_waiting_workers():
   print "Max Waiting Workers       " + str(max(wit_work))
   print "Average Waiting Tasks     " + str(sum(wit_task)/len(wit_task))
   print "Max Task                  " + str(max(wit_task))
-
-def waiting_worker_process(s):
-  m = []
-  wt = []
-  for l in s:
-    x = re.split('I|O|R|Z|A|;| ',l)
-    if len(x) > 2:
-      start = int(x[0])-int(x[2])
-      m.append([int(x[1]),start,int(x[0]),int(x[2])])
-      wt.append(start)  
-  wt = [(x - y)/1000000.0 for (x, y) in zip(wt[1:], wt[:-1])]
-  print "Min = " + str(min(wt)) + "ms"
-  print "Max = " + str(max(wt)) + "ms"
-  print "Average = " + str(sum(wt)/float(len(wt))) + "ms\n"
- 
-
-def waiting_worker_time(d):
-  wlf = glob.glob(d + "/mon_n*_worker[0-9][0-9].log")
-  for fl in wlf:
-    inputFile = open(fl,'r')
-    inputString=inputFile.read()
-    inputFile.close()
-    inputList = [x.strip() for x in inputString.split('#')]
-    del inputList[0]
-    print "\n" + fl
-    waiting_worker_process(inputList)
+  
   
 if __name__=="__main__":
   try:
@@ -153,4 +130,3 @@ if __name__=="__main__":
   print "Latency                   " + str(lat)
   avg_waiting_workers()
   exe_time()
-  #waiting_worker_time(d)

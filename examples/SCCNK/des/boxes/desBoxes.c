@@ -389,13 +389,12 @@ void *snet_source(void *hnd, int mess, int s, int num_node) {
     p[i] = x;
     k[i] = y;
   }
-
+  printf("================================\n\tSOURSE start\n================================\n");    
   int counter = 0;
   for (j = 0; j < mess; j++) {
     i = j % 5;
     C4SNetOut(hnd, 1, C4SNetCreate(CTYPE_char, 8 * size[i], p[i]), C4SNetCreate(CTYPE_char, 7 * size[i], k[i]), size[i], j % num_node);
-    counter++;
-    //printf("msg %d, pipeline %d\n",counter,(j % num_node));
+    printf("msg %d\n",counter++);
   }
 
   for (i = 0; i < 5; i++) {
@@ -407,15 +406,15 @@ void *snet_source(void *hnd, int mess, int s, int num_node) {
 }
 
 void *snet_sink(void *hnd, c4snet_data_t *ct, int size, int node) {
-/*	
-  static int messCount=0;
+	
+  static int messCount=0;  
   
   if (messCount == 0) {
   	printf("================================\n\tSINK start\n================================\n");    
   }
 
   printf("Mess count %d\n\n",messCount++);
-*/	
+	
   C4SNetFree(ct);
   return hnd;
 }
