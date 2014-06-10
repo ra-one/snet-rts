@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 #include "type.h"
-
+ 
 /* The type of a field in a record. */
 typedef struct cdata c4snet_data_t;
 
