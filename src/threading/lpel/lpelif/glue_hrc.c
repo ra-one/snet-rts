@@ -53,6 +53,7 @@ int SNetThreadingInit(int argc, char **argv)
 	config.flags = LPEL_FLAG_PINNED;
   config.wait_window_size = 1;
   config.wait_threshold = -1;
+  config.proc_others = 0;
 
 	for (i=0; i<argc; i++) {
 		if(strcmp(argv[i], "-m") == 0 && i + 1 <= argc) {
@@ -133,152 +134,14 @@ int SNetThreadingInit(int argc, char **argv)
 	LpelInit(&config);
 
 	if (LpelStart(&config)) SNetUtilDebugFatal("Could not initialize LPEL!");
-
+  if (!SNetDistribIsRootNode()) LpelCleanup();
 	return 0;
 }
-
-int SNetThreadingInitWorker(int argc, char **argv)
-{
-#ifdef USE_LOGGING
-	char *mon_elts = NULL;
-#endif
-
-	lpel_config_t config;
-	int i;
-	int neg_demand = 0;
-
-	memset(&config, 0, sizeof(lpel_config_t));
-
-	int priorf = 14;
-
-	config.type = HRC_LPEL;
-
-	config.flags = LPEL_FLAG_PINNED;
-  config.wait_window_size = 1;
-  config.wait_threshold = -1;
-  config.proc_others = 0;
-
-	for (i=0; i<argc; i++) {
-		if(strcmp(argv[i], "-m") == 0 && i + 1 <= argc) {
-			/* Monitoring level */
-			i = i + 1;
-#ifdef USE_LOGGING
-			mon_elts = argv[i];
-#endif
-		} else if(strcmp(argv[i], "-w") == 0 && i + 1 <= argc) {
-			/* Number of workers */
-			i = i + 1;
-			config.num_workers = atoi(argv[i]);
-      config.proc_workers = atoi(argv[i]);
-		} else if(strcmp(argv[i], "-pf") == 0 && i + 1 <= argc) {
-			i = i + 1;
-			priorf = atoi(argv[i]);
-    } else if(strcmp(argv[i], "-nd") == 0 && i + 1 <= argc) {
-			i = i + 1;
-			neg_demand = atoi(argv[i]);
-    } else if(strcmp(argv[i], "-rl") == 0 && i + 1 <= argc) {
-			i = i + 1;
-			rec_lim = atoi(argv[i]);
-		}
-	}
-
-  LpelTaskSetPriorityFunc(priorf);
-	LpelTaskSetNegLim(neg_demand);
-  
-#ifdef USE_LOGGING
-	char fname[63+1];
-	if (mon_elts != NULL) {
-		if (strchr(mon_elts, MON_ALL_FLAG) != NULL) {
-			mon_flags = (1<<7) - 1;
-		} else {
-			if (strchr(mon_elts, MON_MAP_FLAG) != NULL) mon_flags |= SNET_MON_MAP;
-			if (strchr(mon_elts, MON_TIME_FLAG) != NULL) mon_flags |= SNET_MON_TIME;
-			if (strchr(mon_elts, MON_WORKER_FLAG) != NULL) mon_flags |= SNET_MON_WORKER;
-			if (strchr(mon_elts, MON_TASK_FLAG) != NULL) mon_flags |= SNET_MON_TASK;
-			if (strchr(mon_elts, MON_STREAM_FLAG) != NULL) mon_flags |= SNET_MON_STREAM;
-			if (strchr(mon_elts, MON_MESSAGE_FLAG) != NULL) mon_flags |= SNET_MON_MESSAGE;
-			if (strchr(mon_elts, MON_LOAD_FLAG) != NULL) mon_flags |= SNET_MON_LOAD;
-		}
-
-		if ( mon_flags & SNET_MON_MAP) {
-			snprintf(fname, 63, "%sn%02d_tasks.map", filePath,SNetDistribGetNodeId() );
-			/* create a map file */
-			mapfile = fopen(fname, "w");
-			assert( mapfile != NULL);
-			(void) fprintf(mapfile, "%s%c", LOG_FORMAT_VERSION, END_LOG_ENTRY);
-		}
-	}
-  
-	/* initialise monitoring module */
-	SNetThreadingMonInit(&config.mon, SNetDistribGetNodeId(), mon_flags);
-#endif
-
-	LpelInit(&config);
-
-	if (LpelStart(&config)) SNetUtilDebugFatal("Could not initialize LPEL!");
-  LpelCleanup();
-	return 0;
-}
-
-/*
-int SNetThreadingInitWorker(int argc, char **argv)
-{
-
-	lpel_config_t config;
-	int i;
-
-	memset(&config, 0, sizeof(lpel_config_t));
-
-	config.type = HRC_LPEL;
-
-	config.flags = 0;
-
-  config.proc_others = 0;
-  
-	for (i=0; i<argc; i++) {
-    if(strcmp(argv[i], "-w") == 0) {
-			// Number of workers 
-      i++;
-			config.num_workers = atoi(argv[i]);
-      config.proc_workers = atoi(argv[i]);
-    }
-  }
-
-	LpelInit(&config);
-
-	if (LpelStart(&config)) SNetUtilDebugFatal("Could not initialize LPEL!");
-  LpelCleanup();
-	return 0;
-}
-*/
 
 /*****************************************************************************
  * Spawn a new task
  ****************************************************************************/
 static void setTaskRecLimit(snet_entity_descr_t type, lpel_task_t *t){
-	/*
-	int limit;
-	switch(type) {
-	case ENTITY_box:
-		limit = BOX_REC_LIMIT;
-		break;
-	case ENTITY_parallel:
-		limit = PARALLEL_REC_LIMIT;
-		break;
-	case ENTITY_star:
-		limit = STAR_REC_LIMIT;
-		break;
-	case ENTITY_split:
-		limit = SPLIT_REC_LIMIT;
-		break;
-	case ENTITY_filter:
-		limit = FILTER_REC_LIMIT;
-		break;
-	default:
-		limit = OTHER_REC_LIMIT;
-		break;
-	}*/
-
 	int limit;
 	switch(type) {
 	case ENTITY_sync:
@@ -295,17 +158,7 @@ static void setTaskRecLimit(snet_entity_descr_t type, lpel_task_t *t){
 }
 
 
-int SNetThreadingSpawn(snet_entity_t *ent)
-/*
-  snet_entity_type_t type,
-  snet_locvec_t *locvec,
-  int location,
-  const char *name,
-  snet_entityfunc_t func,
-  void *arg
-  )
- */
-{
+int SNetThreadingSpawn(snet_entity_t *ent){
 	snet_entity_descr_t type = SNetEntityDescr(ent);
 	const char *name = SNetEntityName(ent);
 	int location = LPEL_MAP_MASTER;

@@ -48,7 +48,7 @@ bool SNetDistribIsNodeLocation(int location)
   return true;
 }
 
-bool SNetDistribIsRootNode(void) { return true; }
+bool SNetDistribIsRootNode(void) { return SCCIsMaster(); }
 
 snet_stream_t *SNetRouteUpdate(snet_info_t *info, snet_stream_t *input, int loc)
 {

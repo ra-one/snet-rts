@@ -266,26 +266,26 @@ int SNetInRun(int argc, char **argv,
   locvec = SNetLocvecCreate();
   SNetLocvecSet(info, locvec);
 
-  
-  input_stream = SNetStreamCreate(0);
-  output_stream = fun(input_stream, info, 0);
-  output_stream = SNetRouteUpdate(info, output_stream, 0);
-
   SNetDistribStart();
 
   if (SNetDistribIsRootNode()) {
+    input_stream = SNetStreamCreate(0);
+    output_stream = fun(input_stream, info, 0);
+    output_stream = SNetRouteUpdate(info, output_stream, 0);
+    
     /* create output thread */
     SNetInOutputInit(output, labels, interfaces, output_stream);
 
     /* create input thread */
-    SNetInInputInit(input, labels, interfaces, input_stream);
+    SNetInInputInit(input, labels, interfaces, input_stream); 
+    
+    SNetRuntimeStartWait(input_stream, info, output_stream);  
+    
+    /* tell the threading layer that it is ok to shutdown,
+     and wait until it has stopped such that it can be cleaned up */
+    (void) SNetThreadingStop();
   }
 
-  SNetRuntimeStartWait(input_stream, info, output_stream);
-  
-  /* tell the threading layer that it is ok to shutdown,
-     and wait until it has stopped such that it can be cleaned up */
-  (void) SNetThreadingStop();
   (void) SNetThreadingCleanup();
   SNetInfoDestroy(info);
 
@@ -304,19 +304,6 @@ int SNetInRun(int argc, char **argv,
   if(output != stdout) {
     SNetInClose(output);
   }
-
-  return 0;
-}
-
-/**
- * Main starting entry point of the SNet program for worker
- */
-int SNetInRunWorker(int argc, char **argv)
-{
-
-  SNetDistribInit(argc, argv, NULL);
-
-  (void) SNetThreadingInitWorker(argc, argv);
 
   return 0;
 }
