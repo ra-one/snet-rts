@@ -323,10 +323,10 @@ static void ParallelBoxTask(snet_entity_t *ent, void *arg)
             CheckMatch( rec, SNetVariantListListGet( parg->variant_lists, i), matchcounter[i]);
           }
           // used first match stategy
-          //stream_index = BestMatch( matchcounter, num);
+          stream_index = BestMatch( matchcounter, num);
 
          // use Weighted Round Robin strategy
-          stream_index = WeightedRoundRobin( matchcounter, usedcounter, num);
+          //stream_index = WeightedRoundRobin( matchcounter, usedcounter, num);
 
           if (stream_index == -1) {
             SNetUtilDebugFatalEnt( ent,

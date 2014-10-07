@@ -43,6 +43,7 @@ int SNetThreadingInit(int argc, char **argv)
 	lpel_config_t config;
 	int i;
 	int neg_demand = 0;
+  int wait_win_found = 0;
 
 	memset(&config, 0, sizeof(lpel_config_t));
 
@@ -94,11 +95,17 @@ int SNetThreadingInit(int argc, char **argv)
     } else if(strcmp(argv[i], "-ws") == 0 && i + 1 <= argc) {
 			i = i + 1;
 			config.wait_window_size = atoi(argv[i]);
+      wait_win_found = 1;
     } else if(strcmp(argv[i], "-wt") == 0 && i + 1 <= argc) {
 			i = i + 1;
 			config.wait_threshold = atoi(argv[i]);
 		}    
 	}
+  
+  // if wait window is not provided set it to number of workers
+  if(wait_win_found == 0){
+    config.wait_window_size = config.num_workers;
+  }
 
 	LpelTaskSetPriorityFunc(priorf);
 	LpelTaskSetNegLim(neg_demand);
