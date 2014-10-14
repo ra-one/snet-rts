@@ -325,7 +325,7 @@ static void ParallelBoxTask(snet_entity_t *ent, void *arg)
           // used first match stategy
           stream_index = BestMatch( matchcounter, num);
 
-         // use Weighted Round Robin strategy
+          // use Weighted Round Robin strategy
           //stream_index = WeightedRoundRobin( matchcounter, usedcounter, num);
 
           if (stream_index == -1) {

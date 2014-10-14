@@ -55,7 +55,6 @@ int SNetThreadingInit(int argc, char **argv)
   config.wait_window_size = 1;
   config.wait_threshold = -1;
   config.proc_others = 0;
-
 	for (i=0; i<argc; i++) {
 		if(strcmp(argv[i], "-m") == 0 && i + 1 <= argc) {
 			/* Monitoring level */
@@ -96,9 +95,11 @@ int SNetThreadingInit(int argc, char **argv)
 			i = i + 1;
 			config.wait_window_size = atoi(argv[i]);
       wait_win_found = 1;
+      //printf("glue_hrc: ws %d %d\n",config.wait_window_size,atoi(argv[i]));
     } else if(strcmp(argv[i], "-wt") == 0 && i + 1 <= argc) {
 			i = i + 1;
-			config.wait_threshold = atoi(argv[i]);
+			config.wait_threshold = atof(argv[i]);
+      //printf("glue_hrc: wt %f %f\n",config.wait_threshold,atof(argv[i]));
 		}    
 	}
   
@@ -106,7 +107,7 @@ int SNetThreadingInit(int argc, char **argv)
   if(wait_win_found == 0){
     config.wait_window_size = config.num_workers;
   }
-
+  //printf("glue_hrc: wt %f, ws %d\n",config.wait_threshold,config.wait_window_size);
 	LpelTaskSetPriorityFunc(priorf);
 	LpelTaskSetNegLim(neg_demand);
 
