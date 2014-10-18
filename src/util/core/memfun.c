@@ -8,7 +8,7 @@
 #include <errno.h>
 #include "memfun.h"
 #include "/shared/nil/mySnet/pcl/include/scc.h"
-
+ 
 void SNetMemFailed(void)
 {
   fprintf(stderr,
