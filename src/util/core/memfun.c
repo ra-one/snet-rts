@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include "memfun.h"
-#include "/shared/nil/mySnet/pcl/include/scc.h"
+#include "/shared/nil/snetInstall/include/scc.h"
  
 void SNetMemFailed(void)
 {
